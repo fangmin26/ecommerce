@@ -4,6 +4,7 @@ import { CreateUserDto } from "../user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
 import { LocalAuthGuard } from "./guard/localAuth.guard";
 import {Response} from "express";
+import { JwtAuthGuard } from "./guard/jwtAuth.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -32,4 +33,11 @@ export class AuthController {
     })
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getProfile(@Req() request: RequestWithUserInterface){
+    const {user} = request
+    return user;
+
+  }
 }
