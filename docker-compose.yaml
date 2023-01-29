@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      # To connect to the PostgreSQL database run the following command
+      # psql -h localhost -p 15432 -U root -d ecommerce
+      - POSTGRES_USER=commerce_user
+      - POSTGRES_PASSWORD=commerce_pass
+      - POSTGRES_DB=ecommerce
+    ports:
+      - "15432:5432"
+    #    volumes:
+    #      # Pass volume named mysql-data to mysql container
+    #      - "postgresql-data:/var/lib/postgresql/data"
+    networks:
+      - postgres-network
+
+  pgadmin:
+    depends_on:
+      - postgres
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "16543:80"
+    networks:
+      - postgres-network
+
+volumes:
+  postgresql-data:
+    driver: cio
+    driver_opts:
+      profile: "POSTGRESQL"
+
+networks:
+  postgres-network:
+    driver: bridge
