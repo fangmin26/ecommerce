@@ -2,11 +2,11 @@ import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcrypt'
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+  @PrimaryGeneratedColumn('uuid')
+  public id?: string;
 
   @Column()
-  public userName: string;
+  public username: string;
 
   @Column({unique:true})
   public email: string;

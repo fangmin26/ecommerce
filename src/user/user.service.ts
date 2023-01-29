@@ -19,7 +19,7 @@ export class UserService {
     throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
   }
 
-  async getById(id:number){ //id로 검색
+  async getById(id:string){ //id로 검색
     const user = await this.userRepository.findOneBy({id})
     if (user) return user;
     throw  new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND)
