@@ -15,6 +15,7 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto){
     const user = await this.authService.signup(createUserDto)
+    await this.authService.sendVerificationLink(createUserDto.email)
     return user;
   }
 
@@ -40,4 +41,6 @@ export class AuthController {
     return user;
 
   }
+
+
 }
