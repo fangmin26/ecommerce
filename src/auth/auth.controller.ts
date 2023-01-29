@@ -5,6 +5,7 @@ import { RequestWithUserInterface } from "./requestWithUser.interface";
 import { LocalAuthGuard } from "./guard/localAuth.guard";
 import {Response} from "express";
 import { JwtAuthGuard } from "./guard/jwtAuth.guard";
+import { ConfirmEmailDto } from "../user/dto/confirm-email.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +18,13 @@ export class AuthController {
     const user = await this.authService.signup(createUserDto)
     await this.authService.sendVerificationLink(createUserDto.email)
     return user;
+  }
+
+  @Post('email/confirm')
+  async confirm(@Body() confirmationDto: ConfirmEmailDto){
+    const email = await this.authService.decodedConfirmationToken(confirmationDto.token)
+    await this.authService.confirmEmail(email)
+    return 'success'
   }
 
   @UseGuards(LocalAuthGuard)

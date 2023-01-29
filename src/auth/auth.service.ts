@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { UserService } from "../user/user.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import * as bcrypt from 'bcrypt'
@@ -74,4 +74,29 @@ export class AuthService {
       text
     })
   }
+
+  public async confirmEmail(email: string) {
+    const user = await this.userService.getByEmail(email)
+    if(user.isEmailConfirmed){
+      throw new BadRequestException('email is almost confirmed')
+    }
+    await this.userService.markEmailAsConfirmed(email)
+
+  }
+
+  public async decodedConfirmationToken(token: string) {
+    try {
+      const payload = await this.jwtService.verify(token, {
+        secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET')
+      })
+      if (typeof payload === 'object' && 'email' in payload) {
+        return payload.email;
+      }
+      throw new BadRequestException()
+    }catch (err){
+      //만료됬을떄도 구현해볼것
+      throw  new BadRequestException('bad confirmation token')
+    }
+  }
+
 }
