@@ -7,6 +7,8 @@ import { ConfigService } from "@nestjs/config";
 import { TokenPayload } from "./tokenPayload.interface";
 import { EmailService } from "../email/email.service";
 import { VerificationTokenPayloadInterface } from "./VerificationTokenPayload.interface";
+import Bootpay from "@bootpay/backend-js";
+import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
 
 @Injectable()
 export class AuthService {
@@ -99,4 +101,48 @@ export class AuthService {
     }
   }
 
+  public async checkAuth() {
+    Bootpay.setConfiguration({ //실제적으로 받아야하는 key값 =>써드파티에서 제공이됌 유료임, 주신건 테스트용도로만 사용
+      application_id: '63749a42d01c7e0021ea97b7',
+      private_key:    '9JRNmdmCdE3uyplhZyXFHPaEzXbHFp5goGT1unHUXrs='
+    }) //결제건수에 따라 금액 체계 다름
+    try {
+      await Bootpay.getAccessToken() 
+      const response = await Bootpay.requestAuthentication({ //실제적 parameter
+        pg:                '다날',
+        method:            '본인인증',
+        order_name:        '테스트 인증',
+        authentication_id: (new Date()).getTime().toString(),
+        username:          '황민지',
+        identity_no:       '9102262',
+        phone:             '01029693106',
+        carrier:           'LGT',
+        authenticate_type: 'sms'
+      })
+      console.log(response,"response")    
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async authenticateConfirm(confirmAuthenticateDto: ConfirmAuthenticate){
+    Bootpay.setConfiguration({
+      application_id: '63749a42d01c7e0021ea97b7',
+      private_key:    '9JRNmdmCdE3uyplhZyXFHPaEzXbHFp5goGT1unHUXrs='
+    })
+    try {
+      await Bootpay.getAccessToken()
+      const response = await Bootpay.confirmAuthentication(
+          confirmAuthenticateDto.receipt_id,
+          confirmAuthenticateDto.otp
+      )
+      console.log(response)
+      //update작업 => phone boolean 값 과 phone 추가 : 숙제*********, recievedId를 저장해도 됨
+      //재전송 bootpay api사용하여 코드짜오기 2-2(docs)
+      //클라이언트 단에서도 짜보기
+  } catch (e) {
+      // 발급 실패시 오류
+      console.log(e)
+  }
+  }
 }

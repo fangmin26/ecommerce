@@ -6,6 +6,7 @@ import { LocalAuthGuard } from "./guard/localAuth.guard";
 import {Response} from "express";
 import { JwtAuthGuard } from "./guard/jwtAuth.guard";
 import { ConfirmEmailDto } from "../user/dto/confirm-email.dto";
+import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +27,7 @@ export class AuthController {
     await this.authService.confirmEmail(email)
     return 'success'
   }
+
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -50,5 +52,13 @@ export class AuthController {
 
   }
 
+  @Post('check') //본인인증 //boot pay docs 본인인증 2-1 (서버사이드 ) /1-1은 클라이언트
+   async checkAuthenticate() {
+    return await this.authService.checkAuth()
+   }
 
+   @Post('confirm/authenticate')
+   async confirmAuthenticate(@Body() confirmAuthenticateDto: ConfirmAuthenticate) {
+    return await this.authService.authenticateConfirm(confirmAuthenticateDto)
+   }
 }

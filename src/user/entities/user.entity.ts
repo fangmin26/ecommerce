@@ -19,9 +19,14 @@ export class User {
   @Column({default:false})
   public isEmailConfirmed: boolean
 
+
+  @Column()
+  public phone: number;
+
   @BeforeInsert()
   async hashPassword(){
     this.password = await bcrypt.hash(this.password, 10);
   }
+  
 
 }
