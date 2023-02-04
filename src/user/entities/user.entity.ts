@@ -1,6 +1,8 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcrypt'
 import { Exclude } from "class-transformer";
+import { Source } from "./source.enum";
+import { Role } from "./role.enum";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -19,6 +21,19 @@ export class User {
   @Column({default:false})
   public isEmailConfirmed: boolean
 
+  @Column({
+    type: 'enum',
+    enum: Source,
+    default: Source.EMAIL
+  })
+  public source :  Source;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.USER
+  })
+  public role :  Role;
 
   @Column()
   public phone: number;

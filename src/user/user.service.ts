@@ -11,6 +11,10 @@ export class UserService {
     private userRepository:Repository<User>
   ) {}
 
+  async getAllUsers() {
+    return await this.userRepository.find({})
+    
+  }
   async getByEmail(email:string) { //email로 검색
     const user = await this.userRepository.findOneBy({email})
     if (user){

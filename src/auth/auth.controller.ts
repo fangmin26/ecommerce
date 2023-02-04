@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res, HttpStatus } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
@@ -7,6 +7,7 @@ import {Response} from "express";
 import { JwtAuthGuard } from "./guard/jwtAuth.guard";
 import { ConfirmEmailDto } from "../user/dto/confirm-email.dto";
 import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
+import { FacebookAuthGuard } from "./guard/facebookAuth.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -60,5 +61,20 @@ export class AuthController {
    @Post('confirm/authenticate')
    async confirmAuthenticate(@Body() confirmAuthenticateDto: ConfirmAuthenticate) {
     return await this.authService.authenticateConfirm(confirmAuthenticateDto)
+   }
+
+   @Get("/facebook")
+   @UseGuards(FacebookAuthGuard)
+   async facebookLogin(): Promise<any> {
+     return HttpStatus.OK;
+   }
+ 
+   @Get("/facebook/callback")
+   @UseGuards(FacebookAuthGuard)
+   async facebookLoginRedirect(@Req() req: Request): Promise<any> {
+     return {
+      //  statusCode: HttpStatus.OK,
+
+     };
    }
 }
