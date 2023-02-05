@@ -12,5 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {httpsOptions});
   app.useGlobalPipes(new ValidationPipe({skipMissingProperties: true}))
   await app.listen(3000);
+  // await app.listen(443);  //https
+  // await app.listen(80); //http
 }
 bootstrap();
