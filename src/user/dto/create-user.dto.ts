@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsPhoneNumber, IsString, MaxLength, MinLength } from "class-validator";
 
 
 export class CreateUserDto {
@@ -15,6 +15,8 @@ export class CreateUserDto {
   @MaxLength(20)
   password: string;
 
-  @IsNumber()
-  phone: number; //Number 자바스크립트에서만 씀 
+  // @IsPhoneNumber()
+  // @IsNumber()
+  @IsString()
+  phone: string; //Number 자바스크립트에서만 씀 
 }

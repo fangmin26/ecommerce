@@ -1,5 +1,5 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import { Exclude } from "class-transformer";
 import { Source } from "./source.enum";
 import { Role } from "./role.enum";
@@ -36,7 +36,7 @@ export class User {
   public role :  Role;
 
   @Column()
-  public phone: number;
+  public phone: string;
 
   @BeforeInsert()
   async hashPassword(){

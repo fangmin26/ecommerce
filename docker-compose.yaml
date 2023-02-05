@@ -1,24 +1,19 @@
 services:
-  postgres:
+
+  postgres_db:
     image: postgres
     restart: always
+    container_name: postgres_db
     environment:
-      # To connect to the PostgreSQL database run the following command
-      # psql -h localhost -p 15432 -U root -d ecommerce
       - POSTGRES_USER=commerce_user
       - POSTGRES_PASSWORD=commerce_pass
       - POSTGRES_DB=ecommerce
     ports:
-      - "15432:5432"
-    #    volumes:
-    #      # Pass volume named mysql-data to mysql container
-    #      - "postgresql-data:/var/lib/postgresql/data"
+      - "5432:5432"
     networks:
       - postgres-network
 
   pgadmin:
-    depends_on:
-      - postgres
     image: dpage/pgadmin4
     restart: always
     environment:
@@ -26,6 +21,29 @@ services:
       PGADMIN_DEFAULT_PASSWORD: "admin"
     ports:
       - "16543:80"
+    depends_on:
+      - postgres_db
+    networks:
+      - postgres-network
+
+  nestjs_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Only will build development stage from our dockerfile
+      target: development
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    # Run a command against the development stage of the image
+    command: npm run start:dev
+    ports:
+      # - 3000:3000
+      - 443:443 
+      # https://localhost 로 가능 
+    depends_on:
+      - postgres_db
     networks:
       - postgres-network
 
