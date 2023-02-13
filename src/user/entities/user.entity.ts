@@ -3,24 +3,31 @@ import * as bcrypt from 'bcryptjs'
 import { Exclude } from "class-transformer";
 import { Source } from "./source.enum";
 import { Role } from "./role.enum";
+import { ApiProperty } from "@nestjs/swagger";
 @Entity()
 export class User {
+  @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   public id?: string;
 
+  @ApiProperty()
   @Column()
   public username: string;
 
+  @ApiProperty()
   @Column({unique:true})
   public email: string;
 
+  @ApiProperty()
   @Column({nullable:true})
   @Exclude() //password안나옴
   public password?: string;
 
+  @ApiProperty()
   @Column({default:false})
   public isEmailConfirmed: boolean
 
+  @ApiProperty()
   @Column({
     type: 'enum',
     enum: Source,
@@ -28,6 +35,7 @@ export class User {
   })
   public source :  Source;
 
+  @ApiProperty()
   @Column({
     type: 'enum',
     enum: Role,
@@ -35,15 +43,19 @@ export class User {
   })
   public role :  Role;
 
+  @ApiProperty()
   @Column({unique:true})
   public phone: string;
 
+  @ApiProperty()
   @Column({default:false})
   public isSelfCheck: boolean;
 
+  @ApiProperty()
   @Column({nullable:true})
   public realname?: string;//수집용
 
+  @ApiProperty()
   @Column({nullable:true})
   public gender?:number;//수집용
 

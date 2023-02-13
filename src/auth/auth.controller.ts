@@ -8,13 +8,20 @@ import { JwtAuthGuard } from "./guard/jwtAuth.guard";
 import { ConfirmEmailDto } from "../user/dto/confirm-email.dto";
 import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
 import { FacebookAuthGuard } from "./guard/facebookAuth.guard";
+import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { User } from "src/user/entities/user.entity";
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService
   ) {}
 
+  @ApiCreatedResponse({
+    description:'the record has been seccuess',
+    type:User
+  })
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto){
     const user = await this.authService.signup(createUserDto)
