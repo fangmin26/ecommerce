@@ -137,9 +137,13 @@ export class AuthService {
           confirmAuthenticateDto.otp
       )
       console.log(response)
-      //update작업 => phone boolean 값 과 phone 추가 : 숙제*********, recievedId를 저장해도 됨
-      //재전송 bootpay api사용하여 코드짜오기 2-2(docs)
-      //클라이언트 단에서도 짜보기
+      if(response.status ===12){//인증 완ㅛ
+        console.log(response.receipt_id)
+        console.log(response.authenticate_data.phone)
+        const authenticateData = response.authenticate_data
+        this.userService.updateAuthenticationConfirm(authenticateData.phone,
+          authenticateData.name, authenticateData.gender)
+      }
   } catch (e) {
       // 발급 실패시 오류
       console.log(e)

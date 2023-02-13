@@ -35,8 +35,17 @@ export class User {
   })
   public role :  Role;
 
-  @Column()
+  @Column({unique:true})
   public phone: string;
+
+  @Column({default:false})
+  public isSelfCheck: boolean;
+
+  @Column({nullable:true})
+  public realname?: string;//수집용
+
+  @Column({nullable:true})
+  public gender?:number;//수집용
 
   @BeforeInsert()
   async hashPassword(){

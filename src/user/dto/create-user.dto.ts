@@ -15,8 +15,7 @@ export class CreateUserDto {
   @MaxLength(20)
   password: string;
 
-  // @IsPhoneNumber()
-  // @IsNumber()
   @IsString()
+  @IsNotEmpty()
   phone: string; //Number 자바스크립트에서만 씀 
 }

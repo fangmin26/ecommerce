@@ -42,4 +42,14 @@ export class UserService {
     })
   }
 
+  async updateAuthenticationConfirm(phone:string, realname:string,gender:number){//인증 확인
+     const updatedUser = this.userRepository.update({phone},{
+      isSelfCheck: true,
+      realname,
+      gender
+     })
+
+     return updatedUser;
+  }
+
 }
