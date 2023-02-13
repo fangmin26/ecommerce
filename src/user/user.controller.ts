@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Role } from './entities/role.enum';
+import { RoleGuard } from './guard/role.guard';
 import { UserService } from './user.service';
 
 @ApiTags('user')
@@ -7,7 +9,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  //어드민만 접근 가능+ pagination+ 검색  =>>>>>숙제 
+  @UseGuards(RoleGuard(Role.ADMIN))
   @Get('all')
   async getUsers(){
     return this.userService.getAllUsers()

@@ -41,7 +41,7 @@ export class User {
     enum: Role,
     default: Role.USER
   })
-  public role :  Role;
+  public userrole :  Role;
 
   @ApiProperty()
   @Column({unique:true})
