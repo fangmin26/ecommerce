@@ -13,7 +13,9 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm ci
+RUN npm ci --force
+#force 추가해야 도커환경내에서 빌드됌 <- npm i hybrid force 어쩌고했던 것 때문임,,,
+#이부분은 nestjs 도커 설정한 부분을 살리면 실행되는걸 확인해야함 ^^
 
 # Bundle app source
 COPY --chown=node:node . .

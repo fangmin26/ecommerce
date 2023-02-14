@@ -10,6 +10,8 @@ import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
 import { FacebookAuthGuard } from "./guard/facebookAuth.guard";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { User } from "src/user/entities/user.entity";
+import { FacebookAuthResult, UseFacebookAuth } from "@nestjs-hybrid-auth/facebook";
+import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -70,18 +72,39 @@ export class AuthController {
     return await this.authService.authenticateConfirm(confirmAuthenticateDto)
    }
 
-   @Get("/facebook")
-   @UseGuards(FacebookAuthGuard)
-   async facebookLogin(): Promise<any> {
-     return HttpStatus.OK;
-   }
- 
-   @Get("/facebook/callback")
-   @UseGuards(FacebookAuthGuard)
-   async facebookLoginRedirect(@Req() req: Request): Promise<any> {
-     return {
-      //  statusCode: HttpStatus.OK,
+   @UseFacebookAuth()
+   @Get("facebook")
+   loginWithFacebook(){
+    return 'login facebook'
+  }
 
-     };
+ 
+   @UseFacebookAuth()
+   @Get("facebook/callback")
+   facebookCallback(@Req() req):Partial<FacebookAuthResult>{
+    const result: FacebookAuthResult = req.hybridAuthResult;
+    console.log(result)
+    return{
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+      profile: result.profile
+    };
+   }
+
+   @UseGoogleAuth()
+   @Get('google')
+   loginWithGoogle(){
+    return 'login google'
+   }
+
+   @UseGoogleAuth()
+   @Get('google/callback')
+   googleCallback(@Req() req):Partial<GoogleAuthResult>{
+    const result: GoogleAuthResult = req.hybridAuthResult;
+    return {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+      profile: result.profile
+    }
    }
 }

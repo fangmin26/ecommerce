@@ -4,6 +4,7 @@ import { Exclude } from "class-transformer";
 import { Source } from "./source.enum";
 import { Role } from "./role.enum";
 import { ApiProperty } from "@nestjs/swagger";
+import { Social } from "./social.enum";
 @Entity()
 export class User {
   @ApiProperty()
@@ -58,6 +59,8 @@ export class User {
   @ApiProperty()
   @Column({nullable:true})
   public gender?:number;//수집용
+
+
 
   @BeforeInsert()
   async hashPassword(){

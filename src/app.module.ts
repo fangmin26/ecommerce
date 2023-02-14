@@ -27,7 +27,13 @@ import * as Joi from "@hapi/joi";//유성 검사
 
         EMAIL_SERVICE: Joi.string().required(),
         EMAIL_USER: Joi.string().required(),
-        EMAIL_PASSWORD: Joi.string().required()
+        EMAIL_PASSWORD: Joi.string().required(),
+
+        FACEBOOK_CLIENT_ID:Joi.string().required(),
+        FACEBOOK_CLIENT_SECRET:Joi.string().required(),
+
+        GOOGLE_CLIENT_ID:Joi.string().required(),
+        GOOGLE_CLIENT_SECRET:Joi.string().required()
       }))
     }),
     DatabaseModule,
