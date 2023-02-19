@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from "@nestjs/common";
+import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
 import * as fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -16,7 +16,9 @@ async function bootstrap() {
 
   // 내부에서는 http 3000
   const app = await NestFactory.create(AppModule);
-
+  // app.useGlobalInterceptors(new ClassSerializerInterceptor(
+  //   app.get(Reflector)
+  // )) //**전반에 exclude 적용하고 싶을때
   const config = new DocumentBuilder()
   .setTitle('exam')
   .setDescription('descrip')

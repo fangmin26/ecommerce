@@ -7,12 +7,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Social } from "./social.enum";
 import { IsString } from "class-validator";
 import * as grabatar from "gravatar"
+import { AbstractEntity } from "./abstract.entity";
 @Entity()
-export class User {
-  @ApiProperty()
-  @PrimaryGeneratedColumn('uuid')
-  public id?: string;
-
+export class User extends AbstractEntity{
   @ApiProperty()
   @Column()
   public username: string;

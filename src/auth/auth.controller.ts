@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res, HttpStatus } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res, HttpStatus, ClassSerializerInterceptor, UseInterceptors } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { UserService } from "src/user/user.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
@@ -8,7 +8,6 @@ import {Response} from "express";
 import { JwtAuthGuard } from "./guard/jwtAuth.guard";
 import { ConfirmEmailDto } from "../user/dto/confirm-email.dto";
 import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
-import { FacebookAuthGuard } from "./guard/facebookAuth.guard";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { User } from "src/user/entities/user.entity";
 import { FacebookAuthResult, UseFacebookAuth } from "@nestjs-hybrid-auth/facebook";
@@ -16,6 +15,7 @@ import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
 
 @ApiTags('auth')
 @Controller('auth')
+@UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
