@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res, HttpStatus } from "@nestjs/common";
 import { AuthService } from './auth.service';
+import { UserService } from "src/user/user.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
 import { LocalAuthGuard } from "./guard/localAuth.guard";
@@ -17,7 +18,8 @@ import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly userService: UserService
   ) {}
 
   @ApiCreatedResponse({
@@ -101,6 +103,14 @@ export class AuthController {
    @Get('google/callback')
    googleCallback(@Req() req):Partial<GoogleAuthResult>{
     const result: GoogleAuthResult = req.hybridAuthResult;
+    const email = result.profile.emails[0].value
+    const emailhere =  this.userService.getByEmail(email)
+    console.log(emailhere)
+    if(emailhere){
+      console.log("email is in here")
+    }else{
+      console.log("email is in outside")
+    }
     return {
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,

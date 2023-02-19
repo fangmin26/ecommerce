@@ -13,7 +13,7 @@ export class EmailService {
     this.nodemailerTransport = createTransport({
       service: configService.get('EMAIL_SERVICE'),
       // host: 'smtp.gmail.com',
-      // port: 465,
+      // port: 587,
       auth: {
         user: configService.get('EMAIL_USER'),
         pass: configService.get('EMAIL_PASSWORD'),

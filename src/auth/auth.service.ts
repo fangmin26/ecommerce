@@ -21,6 +21,7 @@ export class AuthService {
 
   public async signup(createUserDto: CreateUserDto) {
     try {
+      console.log(createUserDto)
       return await  this.userService.create(createUserDto)
     }catch (error) {
       throw new HttpException('something went wrong', HttpStatus.INTERNAL_SERVER_ERROR)
@@ -67,7 +68,8 @@ export class AuthService {
       secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
       expiresIn: `${this.configService.get('JWT_VERIFICATION_TOKEN_EXPIRATION_TIME')}s`
     })
-
+    console.log(token)
+    console.log(email)
     const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`
     const text = `welcom ${url}`
     return this.emailService.sendMail({
