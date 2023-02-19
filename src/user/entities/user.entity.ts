@@ -46,7 +46,8 @@ export class User {
 
   @ApiProperty()
   @Column({unique:true})
-  public phone: string;
+  @Column({nullable:true})
+  public phone?: string;
 
   @ApiProperty()
   @Column({default:false})

@@ -17,12 +17,17 @@ export class UserService {
   }
   async getByEmail(email:string) { //email로 검색
     const user = await this.userRepository.findOneBy({email})
+    console.log(user,"is user here?")
     if (user){
       return user;
     }
     throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
   }
 
+  async getUserByEmail(email:string) { //user있는지 찾기
+    const user = await this.userRepository.findOneBy({email})
+      return user;
+  }
 
   async getById(id:string){ //id로 검색
     const user = await this.userRepository.findOneBy({id})

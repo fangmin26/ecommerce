@@ -9,6 +9,9 @@ import { EmailService } from "../email/email.service";
 import { VerificationTokenPayloadInterface } from "./VerificationTokenPayload.interface";
 import Bootpay from "@bootpay/backend-js";
 import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "src/user/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -16,7 +19,8 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
+
   ) {}
 
   public async signup(createUserDto: CreateUserDto) {
@@ -28,6 +32,34 @@ export class AuthService {
     }
   }
 
+  public async socialLogin(email: string, username: string,password: string ) {
+    try {
+      console.log(email)
+      const user = await this.userService.getUserByEmail(email)
+      if(!user){
+        console.log("생성")
+        const createUser = await this.signup({email,username,password})
+
+        if(createUser){
+          const authUser = await this.getAuthicatedUser(email, password)
+          const token = await this.generateJWT(authUser.id)
+          return {user:authUser,token}
+  
+        }else{
+          throw new HttpException('회원가입 실패', HttpStatus.BAD_REQUEST)
+        }
+      }else{
+        console.log("로그인")
+        const token = this.generateJWT(user.id)
+        return {user,token}
+      }
+
+    } catch (error) {
+      console.log(error)
+      throw new HttpException('something went wrong-social', HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+  }
   public async getAuthicatedUser(email: string, plainTextPassword:string) {
     try {
       const user = await this.userService.getByEmail(email)

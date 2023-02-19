@@ -101,20 +101,16 @@ export class AuthController {
 
    @UseGoogleAuth()
    @Get('google/callback')
-   googleCallback(@Req() req):Partial<GoogleAuthResult>{
+   googleCallback(@Req() req){
     const result: GoogleAuthResult = req.hybridAuthResult;
     const email = result.profile.emails[0].value
-    const emailhere =  this.userService.getByEmail(email)
-    console.log(emailhere)
-    if(emailhere){
-      console.log("email is in here")
-    }else{
-      console.log("email is in outside")
-    }
-    return {
-      accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
-      profile: result.profile
-    }
+    const username = result.profile.displayName
+    const password_before = result.profile.id + email
+//회원가입 + 로그인 
+console.log(email)
+    const loginRes = this.authService.socialLogin(email,username,password_before)
+ 
+    return loginRes;
+
    }
 }

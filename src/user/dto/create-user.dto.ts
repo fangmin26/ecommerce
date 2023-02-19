@@ -21,6 +21,5 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
-  phone: string; //Number 자바스크립트에서만 씀 
+  phone?: string; //Number 자바스크립트에서만 씀 
 }
