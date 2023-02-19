@@ -19,7 +19,13 @@ export class CreateUserDto {
   @MaxLength(20)
   password: string;
 
+  @ApiProperty({nullable:true})
+  @IsString()
+  profile_img:string;
+
   @ApiProperty()
   @IsString()
   phone?: string; //Number 자바스크립트에서만 씀 
+
+//source추가
 }

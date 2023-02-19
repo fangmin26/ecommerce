@@ -105,10 +105,11 @@ export class AuthController {
     const result: GoogleAuthResult = req.hybridAuthResult;
     const email = result.profile.emails[0].value
     const username = result.profile.displayName
-    const password_before = result.profile.id + email
-//회원가입 + 로그인 
-console.log(email)
-    const loginRes = this.authService.socialLogin(email,username,password_before)
+    const password_before = result.profile.id + email;
+    const photo = result.profile.photos[0].value
+    //회원가입 + 로그인 
+
+    const loginRes = this.authService.socialLogin(email,username,password_before,photo)
  
     return loginRes;
 

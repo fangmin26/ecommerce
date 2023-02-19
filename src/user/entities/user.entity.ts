@@ -5,6 +5,8 @@ import { Source } from "./source.enum";
 import { Role } from "./role.enum";
 import { ApiProperty } from "@nestjs/swagger";
 import { Social } from "./social.enum";
+import { IsString } from "class-validator";
+import * as grabatar from "gravatar"
 @Entity()
 export class User {
   @ApiProperty()
@@ -61,12 +63,21 @@ export class User {
   @Column({nullable:true})
   public gender?:number;//수집용
 
-
+  @ApiProperty()
+  @Column({nullable:true})
+  @IsString()
+  public profile_img?: string;
 
   @BeforeInsert()
   async hashPassword(){
     this.password = await bcrypt.hash(this.password, 10);
   }
-  
 
+  @BeforeInsert()
+  async genarateProfileImg(){
+    this.profile_img = await grabatar.url(
+      this.email,
+      {s: '100',protocol:'https'},
+    )
+  }
 }

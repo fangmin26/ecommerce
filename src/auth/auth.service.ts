@@ -32,13 +32,14 @@ export class AuthService {
     }
   }
 
-  public async socialLogin(email: string, username: string,password: string ) {
+  public async socialLogin(email: string, username: string,password: string, profile_img:string ) {
+    //
     try {
       console.log(email)
       const user = await this.userService.getUserByEmail(email)
       if(!user){
         console.log("생성")
-        const createUser = await this.signup({email,username,password})
+        const createUser = await this.signup({email,username,password,profile_img})
 
         if(createUser){
           const authUser = await this.getAuthicatedUser(email, password)
