@@ -9,7 +9,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(RoleGuard(Role.ADMIN))
+  // @UseGuards(RoleGuard(Role.ADMIN))
   @Get('all')
   async getUsers(){
     return this.userService.getAllUsers()

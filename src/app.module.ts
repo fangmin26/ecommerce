@@ -6,9 +6,10 @@ import { DatabaseModule } from './database/database.module';
 import { ProductModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { EmailModule } from './email/email.module';
 import * as Joi from "@hapi/joi";//유성 검사
 import { TerminusModule } from '@nestjs/terminus';
+// import { EmailModule } from './email/email.module';
+import { EmailModule } from '@email/email.module'; //절대경로 잡아주는것 //front도 적용 
 
 @Module({
   imports: [
