@@ -43,7 +43,7 @@ import { EmailModule } from '@email/email.module'; //절대경로 잡아주는�
     UserModule,
     AuthModule,
     EmailModule,
-    TerminusModule
+    TerminusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

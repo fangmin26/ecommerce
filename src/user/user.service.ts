@@ -1,8 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
-import { Repository } from "typeorm";
+import { QueryBuilder, Repository } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { PageOptionDto } from "@root/common/dtos/page-option.dto";
+import { Page } from "@root/common/dtos/page.dto";
+import { PageMetaDto } from "@root/common/dtos/page-meta.dto";
 
 @Injectable()
 export class UserService {
@@ -11,9 +14,18 @@ export class UserService {
     private userRepository:Repository<User>
   ) {}
 
-  async getAllUsers() {
-    return await this.userRepository.find({})
-    
+  async getAllUsers(
+    pageOptionDto:PageOptionDto
+  ): Promise<Page<User>> {
+    const querBuilder = this.userRepository.createQueryBuilder('user')
+    querBuilder.orderBy('user.createdAt', pageOptionDto.order)
+      .skip(pageOptionDto.skip)
+      .take(pageOptionDto.take)
+
+    const itemCount = await querBuilder.getCount()
+    const {entities} = await querBuilder.getRawAndEntities()
+    const pageMetaDto = new PageMetaDto({itemCount, pageOptionDto})
+    return new Page(entities,pageMetaDto)
   }
   async getByEmail(email:string) { //email로 검색
     const user = await this.userRepository.findOneBy({email})

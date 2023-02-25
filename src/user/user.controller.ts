@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { PageOptionDto } from '@root/common/dtos/page-option.dto';
+import { Page } from '@root/common/dtos/page.dto';
 import { TransformInterceptor } from '@root/common/interceptor/transfor.interceptor';
 import { Role } from './entities/role.enum';
+import { User } from './entities/user.entity';
 import { RoleGuard } from './guard/role.guard';
 import { UserService } from './user.service';
 
@@ -13,8 +16,10 @@ export class UserController {
 
   // @UseGuards(RoleGuard(Role.ADMIN))
   @Get('all')
-  async getUsers(){
-    return this.userService.getAllUsers()
+  async getUsers(
+    @Query() pageOptionDto:PageOptionDto
+  ):Promise<Page<User>>{
+    return this.userService.getAllUsers(pageOptionDto)
   }
 
   @Get(":id")
