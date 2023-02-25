@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcryptjs'
 import { Exclude } from "class-transformer";
 import { Source } from "./source.enum";
@@ -8,6 +8,7 @@ import { Social } from "./social.enum";
 import { IsString } from "class-validator";
 import * as grabatar from "gravatar"
 import { AbstractEntity } from "./abstract.entity";
+import { Profile } from "@root/profile/entities/profile.entity";
 @Entity()
 export class User extends AbstractEntity{
   @ApiProperty()
@@ -64,6 +65,16 @@ export class User extends AbstractEntity{
   @Column({nullable:true})
   @IsString()
   public profile_img?: string;
+
+  // @Column()
+  @OneToOne(()=> Profile,{
+    eager: true,
+    cascade: true
+  })
+  @JoinColumn()
+  public profile: Profile
+
+
 
   @BeforeInsert()
   async hashPassword(){

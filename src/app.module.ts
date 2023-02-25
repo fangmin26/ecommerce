@@ -10,6 +10,7 @@ import * as Joi from "@hapi/joi";//유성 검사
 import { TerminusModule } from '@nestjs/terminus';
 // import { EmailModule } from './email/email.module';
 import { EmailModule } from '@email/email.module'; //절대경로 잡아주는것 //front도 적용 
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { EmailModule } from '@email/email.module'; //절대경로 잡아주는�
     AuthModule,
     EmailModule,
     TerminusModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
