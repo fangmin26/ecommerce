@@ -1,24 +1,13 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import * as fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { TransformInterceptor } from './common/interceptor/transfor.interceptor';
 
 async function bootstrap() {
-  // const httpsOptions = {
-  //   key: fs.readFileSync('./cert/key.pem'),
-  //   cert: fs.readFileSync('./cert/cert.pem') //에러 생김 : 파일 위치 문제였음 ^^;
-  // }
-
-  // const app = await NestFactory.create(AppModule
-  //   , {httpsOptions} //=>postman이 계속 안돼서 꺼놈
-  //   );
-
-  // 내부에서는 http 3000
   const app = await NestFactory.create(AppModule);
-  // app.useGlobalInterceptors(new ClassSerializerInterceptor(
-  //   app.get(Reflector)
-  // )) //**전반에 exclude 적용하고 싶을때
+  // app.useGlobalInterceptors(new TransformInterceptor())
   const config = new DocumentBuilder()
   .setTitle('exam')
   .setDescription('descrip')
