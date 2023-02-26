@@ -11,6 +11,7 @@ import { TerminusModule } from '@nestjs/terminus';
 // import { EmailModule } from './email/email.module';
 import { EmailModule } from '@email/email.module'; //절대경로 잡아주는것 //front도 적용 
 import { ProfileModule } from './profile/profile.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -36,7 +37,13 @@ import { ProfileModule } from './profile/profile.module';
         FACEBOOK_CLIENT_SECRET:Joi.string().required(),
 
         GOOGLE_CLIENT_ID:Joi.string().required(),
-        GOOGLE_CLIENT_SECRET:Joi.string().required()
+        GOOGLE_CLIENT_SECRET:Joi.string().required(),
+
+        AWS_REGION:Joi.string().required(),
+        AWS_ACCESS_KEY_ID:Joi.string().required(),
+        ASW_SECRET_ACCESS_KEY:Joi.string().required(),
+        AWS_PUBLIC_BUCKET_NAME:Joi.string().required()
+
       }))
     }),
     DatabaseModule,
@@ -46,6 +53,7 @@ import { ProfileModule } from './profile/profile.module';
     EmailModule,
     TerminusModule,
     ProfileModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

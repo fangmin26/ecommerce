@@ -6,12 +6,14 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { PageOptionDto } from "@root/common/dtos/page-option.dto";
 import { Page } from "@root/common/dtos/page.dto";
 import { PageMetaDto } from "@root/common/dtos/page-meta.dto";
+import { FilesService } from "@root/files/files.service";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private userRepository:Repository<User>
+    private userRepository:Repository<User>,
+    private readonly filesService:FilesService
   ) {}
 
   async getAllUsers(
@@ -69,6 +71,29 @@ export class UserService {
      })
 
      return updatedUser;
+  }
+
+  //s3
+  // async addAvatar(userId:string, imageBuffer:Buffer, filename: string) {
+  //   const avatar = await this.filesService.uploadPublicFile(imageBuffer, filename)//table생성, s3파일 저장
+  //   const user =  await this.getById(userId); //어느 유저에 저장할건지를 찾고
+  //   await this.userRepository.update(userId, {
+  //     ...user,
+  //     profile_img:avatar.url
+  //   })//update
+  //   return avatar;
+  // }
+  async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
+    // 테이블 생성 s3 파일 저장
+    const avatar = await this.filesService.uploadPublicFile(imageBuffer, filename);
+    // 어느 user에 저장 할건지를 찾고
+    const user = await this.getById(userId);
+    // 업데이트
+    await this.userRepository.update(userId, {
+      ...user,
+      profile_img: avatar.url
+    });
+    return avatar;
   }
 
 }
