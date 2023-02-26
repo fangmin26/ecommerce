@@ -24,7 +24,7 @@ export class UserController {
   }
 
   @Get(":id")
-  async getUserById(id:string){
+  async getUserById(@Param() id:string){
   
     if(id !== undefined){
       return this.userService.getById(id)
