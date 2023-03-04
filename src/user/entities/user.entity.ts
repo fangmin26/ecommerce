@@ -1,10 +1,9 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcryptjs'
 import { Exclude } from "class-transformer";
 import { Source } from "./source.enum";
 import { Role } from "./role.enum";
 import { ApiProperty } from "@nestjs/swagger";
-import { Social } from "./social.enum";
 import { IsString, MaxLength, MinLength } from "class-validator";
 import * as grabatar from "gravatar"
 import { AbstractEntity } from "./abstract.entity";
@@ -75,6 +74,9 @@ export class User extends AbstractEntity{
   })
   @JoinColumn()
   public profile: Profile
+
+  // @OneToMany(()=>Product, (product:Product) =>product.funding)
+  // public fundingProduct:Product[]
 
   @BeforeInsert()
   // @BeforeUpdate()
