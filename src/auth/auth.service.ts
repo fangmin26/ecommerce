@@ -12,6 +12,7 @@ import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "src/user/entities/user.entity";
+import { PasswordChangeDto } from "@root/user/dto/password-change.dto";
 
 @Injectable()
 export class AuthService {
@@ -25,13 +26,21 @@ export class AuthService {
 
   public async signup(createUserDto: CreateUserDto) {
     try {
-      // console.log(createUserDto)
       return await  this.userService.create(createUserDto)
     }catch (error) {
       throw new HttpException('something went wrong', HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
+  public async changePassword(passwordChangeDto:PasswordChangeDto){
+    const email = await this.decodedConfirmationToken(passwordChangeDto.token)
+    console.log(email)
+    // async hashPassword(){
+    //   this.password = await bcrypt.hash(this.password, 10);
+    // }
+    const newpass = await bcrypt.hash(passwordChangeDto.password,10)
+    return await this.userService.changePassword(email,newpass)
+  }
   public async socialLogin(email: string, username: string,password: string, profile_img:string ) {
     //
     try {
@@ -81,6 +90,7 @@ export class AuthService {
     }
   }
 
+
   public generateJWT(userId: string){ //payload에 userId를 넣는다는 의미
     const payload: TokenPayload = { userId }
     // const token = this.jwtService.sign(payload)
@@ -112,6 +122,21 @@ export class AuthService {
     return this.emailService.sendMail({
       to:email,
       subject:'email confirnation',
+      text
+    })
+  }
+
+  public sendPasswordVerification(email: string) {
+    const payload: VerificationTokenPayloadInterface = {email}
+    const token = this.jwtService.sign(payload, { //생성
+      secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET_PASSWORD'),
+      expiresIn: `${this.configService.get('JWT_VERIFICATION_TOKEN_EXPIRATION_TIME_PASSWORD')}s`
+    })
+    const url = `${this.configService.get('PASSWORD_CONFIRMATION_URL')}?token=${token}`
+    const text = `password change ${url}`
+    return this.emailService.sendMail({
+      to:email,
+      subject:'password confirnation',
       text
     })
   }
@@ -187,5 +212,9 @@ export class AuthService {
       // 발급 실패시 오류
       console.log(e)
   }
+  }
+
+  async getPassword (){
+
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, UseGuards, Res, ClassSerializerInterceptor, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, UseGuards, Res, ClassSerializerInterceptor, UseInterceptors, Put } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { UserService } from "src/user/user.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
@@ -12,6 +12,7 @@ import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { User } from "src/user/entities/user.entity";
 import { FacebookAuthResult, UseFacebookAuth } from "@nestjs-hybrid-auth/facebook";
 import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
+import { PasswordChangeDto } from "@root/user/dto/password-change.dto";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -39,7 +40,6 @@ export class AuthController {
     await this.authService.confirmEmail(email)
     return 'success'
   }
-
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -113,8 +113,23 @@ export class AuthController {
     //회원가입 + 로그인 
 
     const loginRes = this.authService.socialLogin(email,username,password_before,photo)
- 
     return loginRes;
-
    }
+
+   @Post('passwordfind')
+   async findPassword(@Body('email') email:string){
+    const findUser = await this.userService.findPasswordByEmail(email)
+    await this.authService.sendPasswordVerification(findUser.email)
+    console.log(findUser) 
+    return "successful send password link"
+   }
+
+   @Put('passwordchange')
+   async changePassword(@Body() passwordChangeDto: PasswordChangeDto){
+    const passchange =await this.authService.changePassword(passwordChangeDto);
+    console.log(passchange,'-------------------passchange')
+    return 'changepassword success'
+   }
+ 
 }
+

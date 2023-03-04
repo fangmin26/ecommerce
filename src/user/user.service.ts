@@ -7,6 +7,7 @@ import { PageOptionDto } from "@root/common/dtos/page-option.dto";
 import { Page } from "@root/common/dtos/page.dto";
 import { PageMetaDto } from "@root/common/dtos/page-meta.dto";
 import { FilesService } from "@root/files/files.service";
+import { PasswordChangeDto } from "./dto/password-change.dto";
 
 @Injectable()
 export class UserService {
@@ -51,12 +52,30 @@ export class UserService {
     throw  new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND)
   }
 
+  async findPasswordByEmail(email:string ){
+    const findUser = await this.userRepository.findOneBy({email})
+    console.log(findUser)
+    if(findUser){
+      //email보내기
+      
+      return findUser
+    }else{
+      throw new HttpException('User with email does not exist', HttpStatus.NOT_FOUND)
+    }
+  }
+
   async create(userData: CreateUserDto) {
     const newUser = await this.userRepository.create(userData);
     await this.userRepository.save(newUser);
     return newUser;
   }
 
+  async changePassword(email:string, password:string){
+    return this.userRepository.update({email},{
+      password
+    })
+
+  }
   async markEmailAsConfirmed(email: string){
     return this.userRepository.update({email},{
       isEmailConfirmed: true

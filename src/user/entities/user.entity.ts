@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from 'bcryptjs'
 import { Exclude } from "class-transformer";
 import { Source } from "./source.enum";
@@ -74,9 +74,8 @@ export class User extends AbstractEntity{
   @JoinColumn()
   public profile: Profile
 
-
-
   @BeforeInsert()
+  // @BeforeUpdate()
   async hashPassword(){
     this.password = await bcrypt.hash(this.password, 10);
   }
