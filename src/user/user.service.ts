@@ -74,7 +74,6 @@ export class UserService {
     return this.userRepository.update({email},{
       password
     })
-
   }
   async markEmailAsConfirmed(email: string){
     return this.userRepository.update({email},{

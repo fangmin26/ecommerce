@@ -93,10 +93,10 @@ export class AuthService {
 
   public generateJWT(userId: string){ //payload에 userId를 넣는다는 의미
     const payload: TokenPayload = { userId }
-    // const token = this.jwtService.sign(payload)
+    const token = this.jwtService.sign(payload)
     // console.log(token ,"--------------token")
-    console.log(payload)
-    // return token
+    // console.log(payload)
+    return token
   }
 
   public sendEmail(email: string) {
