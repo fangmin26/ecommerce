@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res, HttpStatus, ClassSerializerInterceptor, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, UseGuards, Res, ClassSerializerInterceptor, UseInterceptors } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { UserService } from "src/user/user.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
@@ -15,7 +15,7 @@ import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
 
 @ApiTags('auth')
 @Controller('auth')
-@UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
+// @UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -47,13 +47,16 @@ export class AuthController {
   //   // const loggedUser = await this.authService.getAuthicatedUser(loginUserDto.email, loginUserDto.password)
   //   //return loggedUser;
   // }
-  async login(@Req() request: RequestWithUserInterface, @Res() response: Response){
+  async login(@Req() request: RequestWithUserInterface){
     const user = request.user //로그인한 상대는 유저
     const token = await this.authService.generateJWT(user.id)
+    // // return user;
+    // return response.send({
+    //   user, 
+    //   // token
+    // })
     // return user;
-    return response.send({
-      user, token
-    })
+    return{user,token}
   }
 
   @UseGuards(JwtAuthGuard)

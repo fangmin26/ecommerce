@@ -25,7 +25,7 @@ export class AuthService {
 
   public async signup(createUserDto: CreateUserDto) {
     try {
-      console.log(createUserDto)
+      // console.log(createUserDto)
       return await  this.userService.create(createUserDto)
     }catch (error) {
       throw new HttpException('something went wrong', HttpStatus.INTERNAL_SERVER_ERROR)
@@ -66,6 +66,8 @@ export class AuthService {
       const user = await this.userService.getByEmail(email)
       // password 암호화 풀기 - 디코딩
       await this.verifyPassword(plainTextPassword, user.password)
+      console.log(user)
+      console.log(plainTextPassword, user.password)
       return user;
     }catch (error){
       throw new HttpException('no user here', HttpStatus.BAD_REQUEST)
@@ -81,8 +83,10 @@ export class AuthService {
 
   public generateJWT(userId: string){ //payload에 userId를 넣는다는 의미
     const payload: TokenPayload = { userId }
-    const token = this.jwtService.sign(payload)
-    return token
+    // const token = this.jwtService.sign(payload)
+    // console.log(token ,"--------------token")
+    console.log(payload)
+    // return token
   }
 
   public sendEmail(email: string) {

@@ -1,6 +1,6 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from "@nestjs/common";
+import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
 import * as fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TransformInterceptor } from './common/interceptor/transfor.interceptor';
@@ -9,7 +9,12 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.useGlobalInterceptors(new TransformInterceptor())
+
+  app.useGlobalInterceptors(new TransformInterceptor())
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(
+    app.get(Reflector)
+  ))
+
   const docubuilder = new DocumentBuilder()
   .setTitle('exam')
   .setDescription('descrip')
@@ -20,7 +25,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app,docubuilder)
   SwaggerModule.setup('api',app, document)
   
-  app.useGlobalPipes(new ValidationPipe({skipMissingProperties: true}))
+  app.useGlobalPipes(new ValidationPipe({skipMissingProperties: true,transform:true}))
   const configService = app.get(ConfigService);//credential오류시 확인
   config.update({
     accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),

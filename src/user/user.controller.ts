@@ -11,7 +11,7 @@ import { UserService } from './user.service';
 import { Express } from 'express'; //buffer에러가 날 경우 express import 안되어있는 경우의 수
 @ApiTags('user')
 @Controller('user')
-@UseInterceptors(TransformInterceptor)
+// @UseInterceptors(TransformInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -24,7 +24,7 @@ export class UserController {
   }
 
   @Get(":id")
-  async getUserById(@Param() id:string){
+  async getUserById( id:string){
   
     if(id !== undefined){
       return this.userService.getById(id)
