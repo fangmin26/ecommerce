@@ -5,7 +5,7 @@ import { Source } from "./source.enum";
 import { Role } from "./role.enum";
 import { ApiProperty } from "@nestjs/swagger";
 import { Social } from "./social.enum";
-import { IsString } from "class-validator";
+import { IsString, MaxLength, MinLength } from "class-validator";
 import * as grabatar from "gravatar"
 import { AbstractEntity } from "./abstract.entity";
 import { Profile } from "@root/profile/entities/profile.entity";
@@ -22,6 +22,8 @@ export class User extends AbstractEntity{
   @ApiProperty()
   @Column({nullable:true})
   @Exclude() //password안나옴
+  @MinLength(8)
+  @MaxLength(20)
   public password?: string;
 
   @ApiProperty()

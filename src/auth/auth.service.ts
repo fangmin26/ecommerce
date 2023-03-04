@@ -9,9 +9,6 @@ import { EmailService } from "../email/email.service";
 import { VerificationTokenPayloadInterface } from "./VerificationTokenPayload.interface";
 import Bootpay from "@bootpay/backend-js";
 import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { User } from "src/user/entities/user.entity";
 import { PasswordChangeDto } from "@root/user/dto/password-change.dto";
 
 @Injectable()

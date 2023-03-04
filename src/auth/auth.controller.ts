@@ -1,18 +1,19 @@
-import { Controller, Get, Post, Body, Req, UseGuards, Res, ClassSerializerInterceptor, UseInterceptors, Put } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, UseGuards, Put } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { UserService } from "src/user/user.service";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
 import { LocalAuthGuard } from "./guard/localAuth.guard";
-import {Response} from "express";
-import { JwtAuthGuard } from "./guard/jwtAuth.guard";
-import { ConfirmEmailDto } from "../user/dto/confirm-email.dto";
-import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
-import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
-import { User } from "src/user/entities/user.entity";
+import { ApiCreatedResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FacebookAuthResult, UseFacebookAuth } from "@nestjs-hybrid-auth/facebook";
 import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
 import { PasswordChangeDto } from "@root/user/dto/password-change.dto";
+import { User } from "@root/user/entities/user.entity";
+import { ConfirmAuthenticate } from "@root/user/dto/confirm-authenticate.dto";
+import { ConfirmEmailDto } from "@root/user/dto/confirm-email.dto";
+import { JwtAuthGuard } from "./guard/jwtAuth.guard";
+
+
 
 @ApiTags('auth')
 @Controller('auth')
@@ -34,13 +35,18 @@ export class AuthController {
     return user;
   }
 
-  @Post('email/confirm')
+  @ApiResponse({status:200, description:"confirmation email"})
+  @ApiResponse({status:401, description:"forbidden"})
   async confirm(@Body() confirmationDto: ConfirmEmailDto){
     const email = await this.authService.decodedConfirmationToken(confirmationDto.token)
     await this.authService.confirmEmail(email)
     return 'success'
   }
 
+  @ApiResponse({
+    description:'the record has been seccuess',
+    type:User
+  })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   // async login(@Body() loginUserDto: LoginUserDto ){
@@ -59,6 +65,10 @@ export class AuthController {
     return{user,token}
   }
 
+  @ApiResponse({
+    description:'the record has been seccuess',
+    type:User
+  })
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() request: RequestWithUserInterface){
@@ -67,16 +77,22 @@ export class AuthController {
 
   }
 
+  @ApiResponse({status:200, description:"check 본인인증"})
+  @ApiResponse({status:401, description:"forbidden"})
   @Post('check') //본인인증 //boot pay docs 본인인증 2-1 (서버사이드 ) /1-1은 클라이언트
    async checkAuthenticate() {
     return await this.authService.checkAuth()
    }
 
+   @ApiResponse({status:200, description:"confirm authenticate"})
+   @ApiResponse({status:401, description:"forbidden"})
    @Post('confirm/authenticate')
    async confirmAuthenticate(@Body() confirmAuthenticateDto: ConfirmAuthenticate) {
     return await this.authService.authenticateConfirm(confirmAuthenticateDto)
    }
 
+   @ApiResponse({status:200, description:"facebook login"})
+   @ApiResponse({status:401, description:"forbidden"})
    @UseFacebookAuth()
    @Get("facebook")
    loginWithFacebook(){
@@ -84,6 +100,8 @@ export class AuthController {
   }
 
  
+  @ApiResponse({status:200, description:"facebook callback success"})
+  @ApiResponse({status:401, description:"forbidden"})
    @UseFacebookAuth()
    @Get("facebook/callback")
    facebookCallback(@Req() req):Partial<FacebookAuthResult>{
@@ -96,12 +114,16 @@ export class AuthController {
     };
    }
 
+   @ApiResponse({status:200, description:"google login success"})
+   @ApiResponse({status:401, description:"forbidden"})
    @UseGoogleAuth()
    @Get('google')
    loginWithGoogle(){
     return 'login google'
    }
 
+   @ApiResponse({status:200, description:"google callback success"})
+   @ApiResponse({status:401, description:"forbidden"})
    @UseGoogleAuth()
    @Get('google/callback')
    googleCallback(@Req() req){
@@ -111,11 +133,12 @@ export class AuthController {
     const password_before = result.profile.id + email;
     const photo = result.profile.photos[0].value
     //회원가입 + 로그인 
-
     const loginRes = this.authService.socialLogin(email,username,password_before,photo)
     return loginRes;
    }
 
+   @ApiResponse({status:200, description:"passwordfind by email success"})
+   @ApiResponse({status:401, description:"forbidden"})
    @Post('passwordfind')
    async findPassword(@Body('email') email:string){
     const findUser = await this.userService.findPasswordByEmail(email)
@@ -124,12 +147,13 @@ export class AuthController {
     return "successful send password link"
    }
 
+   @ApiResponse({status:200, description:"passwordchange by email success"})
+   @ApiResponse({status:401, description:"forbidden"})
    @Put('passwordchange')
    async changePassword(@Body() passwordChangeDto: PasswordChangeDto){
     const passchange =await this.authService.changePassword(passwordChangeDto);
     console.log(passchange,'-------------------passchange')
     return 'changepassword success'
    }
- 
 }
 
