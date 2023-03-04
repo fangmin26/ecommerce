@@ -1,4 +1,4 @@
-import { PageMetaDto } from "./page-meta.dto";
+import { PageMetaDto } from "../dtos/page-meta.dto";
 
 export class Page<T>{
     readonly data: T[]; //schema

@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body,UseGuards, UseInterceptors, HttpException, HttpStatus, Query, Req, UploadedFile, Put } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@root/auth/guard/jwtAuth.guard';
-import { RequestWithUserInterface } from '@root/auth/requestWithUser.interface';
-import { PageOptionDto } from '@root/common/dtos/page-option.dto';
-import { Page } from '@root/common/dtos/page.dto';
+import { RequestWithUserInterface } from '@auth/requestWithUser.interface';
+import { PageOptionDto } from '@common/dtos/page-option.dto';
+import { Page } from '@common/dtos/page.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { Express } from 'express'; //buffer에러가 날 경우 express import 안되어있는 경우의 수
@@ -15,6 +15,10 @@ import * as bcrypt from 'bcryptjs'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiCreatedResponse({
+    description:'the record has been seccuess',
+    type:User
+  })
   // @UseGuards(RoleGuard(Role.ADMIN))
   @Get('all')
   async getUsers(
@@ -23,9 +27,10 @@ export class UserController {
     return this.userService.getAllUsers(pageOptionDto)
   }
 
+  @ApiResponse({status:200, description:"id find success"})
+  @ApiResponse({status:401, description:"forbidden"})
   @Get(":id")
   async getUserById( id:string){
-  
     if(id !== undefined){
       return this.userService.getById(id)
     }else{
@@ -40,6 +45,9 @@ export class UserController {
   // async addAvatar(@Req() request: RequestWithUserInterface, @UploadedFiles() file:Express.Multer.File){
   //   return this.userService.addAvatar(request.user.id, file.buffer, file.originalname)
   // }
+
+  @ApiResponse({status:200, description:"profile file post success"})
+  @ApiResponse({status:401, description:"forbidden"})
   @Post('profileimage')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
@@ -47,6 +55,8 @@ export class UserController {
     return this.userService.addAvatar(request.user.id, file.buffer, file.originalname);
   }
 
+  @ApiResponse({status:200, description:"passwordchange success"})
+  @ApiResponse({status:401, description:"forbidden"})
   @Put('passwordchange')
   @UseGuards(JwtAuthGuard)
   async changePasswordIn(@Req() request:RequestWithUserInterface, @Body('password') password:string){

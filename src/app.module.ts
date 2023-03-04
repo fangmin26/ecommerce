@@ -2,16 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from "@nestjs/config";
-import { DatabaseModule } from './database/database.module';
-import { ProductModule } from './product/product.module';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
+import { DatabaseModule } from '@database/database.module';
+import { ProductModule } from '@product/product.module';
+import { UserModule } from '@user/user.module';
+import { AuthModule } from '@auth/auth.module';
 import * as Joi from "@hapi/joi";//유성 검사
 import { TerminusModule } from '@nestjs/terminus';
-// import { EmailModule } from './email/email.module';
 import { EmailModule } from '@email/email.module'; //절대경로 잡아주는것 //front도 적용 
-import { ProfileModule } from './profile/profile.module';
-import { FilesModule } from './files/files.module';
+import { ProfileModule } from '@profile/profile.module';
+import { FilesModule } from '@files/files.module';
 
 @Module({
   imports: [

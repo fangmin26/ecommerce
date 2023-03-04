@@ -1,19 +1,17 @@
 import { Controller, Get, Post, Body, Req, UseGuards, Put } from "@nestjs/common";
-import { AuthService } from './auth.service';
-import { UserService } from "src/user/user.service";
-import { CreateUserDto } from "../user/dto/create-user.dto";
+import { CreateUserDto } from "@user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
-import { LocalAuthGuard } from "./guard/localAuth.guard";
 import { ApiCreatedResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FacebookAuthResult, UseFacebookAuth } from "@nestjs-hybrid-auth/facebook";
 import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
-import { PasswordChangeDto } from "@root/user/dto/password-change.dto";
-import { User } from "@root/user/entities/user.entity";
-import { ConfirmAuthenticate } from "@root/user/dto/confirm-authenticate.dto";
-import { ConfirmEmailDto } from "@root/user/dto/confirm-email.dto";
+import { PasswordChangeDto } from "@user/dto/password-change.dto";
+import { User } from "@user/entities/user.entity";
+import { ConfirmAuthenticate } from "@user/dto/confirm-authenticate.dto";
+import { ConfirmEmailDto } from "@user/dto/confirm-email.dto";
 import { JwtAuthGuard } from "./guard/jwtAuth.guard";
-
-
+import { AuthService } from "./auth.service";
+import { UserService } from "@user/user.service";
+import { LocalAuthGuard } from "./guard/localAuth.guard";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -49,19 +47,9 @@ export class AuthController {
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  // async login(@Body() loginUserDto: LoginUserDto ){
-  //   // const loggedUser = await this.authService.getAuthicatedUser(loginUserDto.email, loginUserDto.password)
-  //   //return loggedUser;
-  // }
   async login(@Req() request: RequestWithUserInterface){
     const user = request.user //로그인한 상대는 유저
     const token = await this.authService.generateJWT(user.id)
-    // // return user;
-    // return response.send({
-    //   user, 
-    //   // token
-    // })
-    // return user;
     return{user,token}
   }
 

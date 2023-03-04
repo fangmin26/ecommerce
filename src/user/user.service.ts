@@ -1,13 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
-import { QueryBuilder, Repository } from "typeorm";
+import {  Repository } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { PageOptionDto } from "@root/common/dtos/page-option.dto";
-import { Page } from "@root/common/dtos/page.dto";
-import { PageMetaDto } from "@root/common/dtos/page-meta.dto";
-import { FilesService } from "@root/files/files.service";
-import { PasswordChangeDto } from "./dto/password-change.dto";
+import { PageOptionDto } from "@common/dtos/page-option.dto";
+import { Page } from "@common/dtos/page.dto";
+import { PageMetaDto } from "@common/dtos/page-meta.dto";
+import { FilesService } from "@files/files.service";
 
 @Injectable()
 export class UserService {

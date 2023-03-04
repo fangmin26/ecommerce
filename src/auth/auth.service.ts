@@ -1,15 +1,15 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { UserService } from "../user/user.service";
-import { CreateUserDto } from "../user/dto/create-user.dto";
+import { UserService } from "@user/user.service";
+import { CreateUserDto } from "@user/dto/create-user.dto";
 import * as bcrypt from 'bcryptjs'
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { TokenPayload } from "./tokenPayload.interface";
-import { EmailService } from "../email/email.service";
 import { VerificationTokenPayloadInterface } from "./VerificationTokenPayload.interface";
 import Bootpay from "@bootpay/backend-js";
-import { ConfirmAuthenticate } from "src/user/dto/confirm-authenticate.dto";
-import { PasswordChangeDto } from "@root/user/dto/password-change.dto";
+import { ConfirmAuthenticate } from "@user/dto/confirm-authenticate.dto";
+import { PasswordChangeDto } from "@user/dto/password-change.dto";
+import { EmailService } from "@email/email.service";
 
 @Injectable()
 export class AuthService {

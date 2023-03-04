@@ -1,8 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { AbstractEntity } from "@root/user/entities/abstract.entity";
-import { User } from "@root/user/entities/user.entity";
-import { IsNotEmpty, IsString } from "class-validator";
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity} from "typeorm";
 
 @Entity()
 export class Product extends AbstractEntity{

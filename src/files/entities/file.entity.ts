@@ -1,11 +1,8 @@
 import { AbstractEntity } from "@root/user/entities/abstract.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity } from "typeorm";
 
 @Entity()
-export class PublicFile {
-    @PrimaryGeneratedColumn('uuid')
-    public id:string;
-
+export class PublicFile extends AbstractEntity{
     @Column()
     public url: string;
 

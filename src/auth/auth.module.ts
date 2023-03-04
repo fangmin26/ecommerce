@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserModule } from "../user/user.module";
 import { PassportModule } from "@nestjs/passport";
 import { LocalStrategy } from "./strategy/local.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtStrategy } from "./strategy/jwt.strategy";
-import { EmailModule } from "../email/email.module";
 import { FacebookAuthModule } from '@nestjs-hybrid-auth/facebook';
 import { FacebookAuthConfig } from './strategy/facebook.auth.config';
 import { GoogleAuthModule } from '@nestjs-hybrid-auth/google';
 import { GoogleAuthConfig } from './strategy/google.auth.config';
+import { EmailModule } from '@email/email.module';
+import { UserModule } from '@user/user.module';
 
 @Module({
   imports: [
