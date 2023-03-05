@@ -8,6 +8,7 @@ import { IsString, MaxLength, MinLength } from "class-validator";
 import * as grabatar from "gravatar"
 import { AbstractEntity } from "./abstract.entity";
 import { Profile } from "@root/profile/entities/profile.entity";
+import { InternalServerErrorException } from "@nestjs/common";
 @Entity()
 export class User extends AbstractEntity{
   @ApiProperty()
@@ -78,10 +79,16 @@ export class User extends AbstractEntity{
   // @OneToMany(()=>Product, (product:Product) =>product.funding)
   // public fundingProduct:Product[]
 
+  @BeforeUpdate()
   @BeforeInsert()
-  // @BeforeUpdate()
   async hashPassword(){
-    this.password = await bcrypt.hash(this.password, 10);
+    // this.password = await bcrypt.hash(this.password, 10);
+    try {
+      this.password = await bcrypt.hash(this.password, 10);
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerErrorException()
+    }
   }
 
   @BeforeInsert()
