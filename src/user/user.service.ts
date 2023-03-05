@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import {  Repository } from "typeorm";
@@ -7,6 +7,7 @@ import { PageOptionDto } from "@common/dtos/page-option.dto";
 import { Page } from "@common/dtos/page.dto";
 import { PageMetaDto } from "@common/dtos/page-meta.dto";
 import { FilesService } from "@files/files.service";
+import { Cron } from "@nestjs/schedule";
 
 @Injectable()
 export class UserService {
@@ -15,6 +16,8 @@ export class UserService {
     private userRepository:Repository<User>,
     private readonly filesService:FilesService
   ) {}
+
+  private readonly logger = new Logger(UserService.name)
 
   async getAllUsers(
     pageOptionDto:PageOptionDto
@@ -70,9 +73,13 @@ export class UserService {
   }
 
   async changePassword(email:string, password:string){
-    return this.userRepository.update({email},{
-      password
-    })
+    // return this.userRepository.update({email},{
+    //   password
+    // })
+    const user = await this.userRepository.findOneBy({email})
+    console.log(user, password,"~~~~~~~~~~~~~~~~~~")
+    user.password = password
+    return this.userRepository.save(user)
   }
   async markEmailAsConfirmed(email: string){
     return this.userRepository.update({email},{
@@ -112,5 +119,11 @@ export class UserService {
     });
     return avatar;
   }
+
+  @Cron('10 * * * * *') //10초마다 로그 =>구독,결제 시 사용많이함 (정기결제같은거 **)
+   handleCron(){
+    this.logger.debug('cron logger')
+  }
+
 
 }

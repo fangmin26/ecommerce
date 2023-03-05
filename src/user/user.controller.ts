@@ -8,7 +8,7 @@ import { Page } from '@common/dtos/page.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { Express } from 'express'; //buffer에러가 날 경우 express import 안되어있는 경우의 수
-import * as bcrypt from 'bcryptjs'
+
 @ApiTags('user')
 @Controller('user')
 // @UseInterceptors(TransformInterceptor)
@@ -57,13 +57,17 @@ export class UserController {
 
   @ApiResponse({status:200, description:"passwordchange success"})
   @ApiResponse({status:401, description:"forbidden"})
-  @Put('passwordchange')
+  @Post('password/change')
   @UseGuards(JwtAuthGuard)
   async changePasswordIn(@Req() request:RequestWithUserInterface, @Body('password') password:string){
     const {user} = request
-    const newpass = await bcrypt.hash(password,10)
-    await this.userService.changePassword(user.email, newpass)
+    // const newpass = await bcrypt.hash(password,10)
+    await this.userService.changePassword(user.email, password)
     return 'success passwordchange'
   }
 
+  // @Get('cron')
+  // async debugCron(){
+  //   return this.userService.handleCron()
+  // }
 }

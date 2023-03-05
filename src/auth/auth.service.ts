@@ -32,11 +32,9 @@ export class AuthService {
   public async changePassword(passwordChangeDto:PasswordChangeDto){
     const email = await this.decodedConfirmationToken(passwordChangeDto.token)
     console.log(email)
-    // async hashPassword(){
-    //   this.password = await bcrypt.hash(this.password, 10);
-    // }
-    const newpass = await bcrypt.hash(passwordChangeDto.password,10)
-    return await this.userService.changePassword(email,newpass)
+    // const newpass = await bcrypt.hash(passwordChangeDto.password,10)
+    // return await this.userService.changePassword(email,newpass)
+    return await this.userService.changePassword(email, passwordChangeDto.password)
   }
   public async socialLogin(email: string, username: string,password: string, profile_img:string ) {
     //

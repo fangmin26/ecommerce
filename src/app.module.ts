@@ -11,6 +11,7 @@ import { TerminusModule } from '@nestjs/terminus';
 import { EmailModule } from '@email/email.module'; //절대경로 잡아주는것 //front도 적용 
 import { ProfileModule } from '@profile/profile.module';
 import { FilesModule } from '@files/files.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { FilesModule } from '@files/files.module';
     TerminusModule,
     ProfileModule,
     FilesModule,
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService],
