@@ -8,13 +8,18 @@ import { Page } from "@common/dtos/page.dto";
 import { PageMetaDto } from "@common/dtos/page-meta.dto";
 import { FilesService } from "@files/files.service";
 import { Cron } from "@nestjs/schedule";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import * as bcrypt from 'bcryptjs'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository:Repository<User>,
-    private readonly filesService:FilesService
+    private readonly filesService:FilesService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   private readonly logger = new Logger(UserService.name)
@@ -73,14 +78,23 @@ export class UserService {
   }
 
   async changePassword(email:string, password:string){
-    // return this.userRepository.update({email},{
-    //   password
-    // })
     const user = await this.userRepository.findOneBy({email})
     console.log(user, password,"~~~~~~~~~~~~~~~~~~")
     user.password = password
     return this.userRepository.save(user)
   }
+
+  async isInPass(email:string,checkpassword:string){
+    console.log(email,checkpassword,"~~checkpassword")
+    const user = await this.userRepository.findOneBy({email})
+    console.log(user)
+    const isPasswordMatching= await bcrypt.compare(checkpassword, user.password)
+    console.log(isPasswordMatching,"~~~?????")
+    if(!isPasswordMatching) {
+      throw new HttpException('wrong password', HttpStatus.BAD_REQUEST)
+    }
+  }
+
   async markEmailAsConfirmed(email: string){
     return this.userRepository.update({email},{
       isEmailConfirmed: true
@@ -109,7 +123,7 @@ export class UserService {
   // }
   async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
     // 테이블 생성 s3 파일 저장
-    const avatar = await this.filesService.uploadPublicFile(imageBuffer, filename);
+     const avatar = await this.filesService.uploadPublicFile(imageBuffer, filename);
     // 어느 user에 저장 할건지를 찾고
     const user = await this.getById(userId);
     // 업데이트
@@ -119,6 +133,7 @@ export class UserService {
     });
     return avatar;
   }
+
 
   @Cron('10 * * * * *') //10초마다 로그 =>구독,결제 시 사용많이함 (정기결제같은거 **)
    handleCron(){

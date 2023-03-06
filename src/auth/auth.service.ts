@@ -30,6 +30,7 @@ export class AuthService {
   }
 
   public async changePassword(passwordChangeDto:PasswordChangeDto){
+    console.log(passwordChangeDto.token)
     const email = await this.decodedConfirmationToken(passwordChangeDto.token)
     console.log(email)
     // const newpass = await bcrypt.hash(passwordChangeDto.password,10)
@@ -153,9 +154,8 @@ export class AuthService {
       if (typeof payload === 'object' && 'email' in payload) {
         return payload.email;
       }
-      throw new BadRequestException()
+      throw new BadRequestException('just bad request')
     }catch (err){
-      //만료됬을떄도 구현해볼것
       throw  new BadRequestException('bad confirmation token')
     }
   }

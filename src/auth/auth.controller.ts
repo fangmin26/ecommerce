@@ -33,6 +33,8 @@ export class AuthController {
     return user;
   }
 
+
+
   @ApiResponse({status:200, description:"confirmation email"})
   @ApiResponse({status:401, description:"forbidden"})
   async confirm(@Body() confirmationDto: ConfirmEmailDto){
@@ -137,7 +139,7 @@ export class AuthController {
 
    @ApiResponse({status:200, description:"passwordchange by email success"})
    @ApiResponse({status:401, description:"forbidden"})
-   @Put('passwordchange')
+   @Put('password/change')
    async changePassword(@Body() passwordChangeDto: PasswordChangeDto){
     const passchange =await this.authService.changePassword(passwordChangeDto);
     console.log(passchange,'-------------------passchange')

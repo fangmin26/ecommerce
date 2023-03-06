@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3 } from 'aws-sdk';
@@ -42,9 +42,21 @@ export class FilesService {
       key: uploadResult.Key,
       url: uploadResult.Location
     })
-
     await this.publicFileRepo.save(newFile)
     return newFile;
+  }
+
+  async deleteAvatar(id:string){
+    try {
+      console.log(id,"!!!!")
+      if(id){
+        await this.publicFileRepo.delete({id})
+      }else{
+        throw new HttpException('no id', HttpStatus.NOT_FOUND)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 

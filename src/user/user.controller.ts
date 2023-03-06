@@ -8,12 +8,16 @@ import { Page } from '@common/dtos/page.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { Express } from 'express'; //buffer에러가 날 경우 express import 안되어있는 경우의 수
+import { FilesService } from '@root/files/files.service';
 
 @ApiTags('user')
 @Controller('user')
 // @UseInterceptors(TransformInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly filesService:FilesService
+    ) {}
 
   @ApiCreatedResponse({
     description:'the record has been seccuess',
@@ -55,13 +59,22 @@ export class UserController {
     return this.userService.addAvatar(request.user.id, file.buffer, file.originalname);
   }
 
+  @ApiResponse({status:200, description:"profile file delete success"})
+  @ApiResponse({status:401, description:"forbidden"})
+  @Post('profileimage/delete')
+  @UseGuards(JwtAuthGuard)
+  async deleteAvatar(@Body('id') id:string){
+    await this.filesService.deleteAvatar(id)
+    return 'success delete profileimage'
+  }
+  
   @ApiResponse({status:200, description:"passwordchange success"})
   @ApiResponse({status:401, description:"forbidden"})
   @Post('password/change')
   @UseGuards(JwtAuthGuard)
-  async changePasswordIn(@Req() request:RequestWithUserInterface, @Body('password') password:string){
+  async changePasswordIn(@Req() request:RequestWithUserInterface, @Body('password') password:string, @Body('checkpassword')checkpassword:string){
     const {user} = request
-    // const newpass = await bcrypt.hash(password,10)
+    await this.userService.isInPass(user.email,checkpassword)
     await this.userService.changePassword(user.email, password)
     return 'success passwordchange'
   }
