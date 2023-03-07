@@ -1,12 +1,15 @@
-import { AbstractEntity } from "@root/user/entities/abstract.entity";
-import { Column, Entity} from "typeorm";
+import {  AbstractEntityExceptId } from "@root/user/entities/abstract.entity";
+import { Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
-export class Product extends AbstractEntity{
+export class Product extends AbstractEntityExceptId{
 //  @ManyToMany()
 //   public category?: string[]
 
-  @Column()
+  @PrimaryGeneratedColumn()//productnumber용으로 만듬
+  id:number;
+
+  @Column({nullable:true})
   public title: string
 
   @Column()
