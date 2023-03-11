@@ -51,8 +51,10 @@ export class AuthController {
   @Post('login')
   async login(@Req() request: RequestWithUserInterface){
     const user = request.user //로그인한 상대는 유저
-    const token = await this.authService.generateJWT(user.id)
-    return{user,token}
+    const accessTokenCookie = await this.authService.generateJWT(user.id)
+    // request.res.setHeader('Set-Cookie','adfadf')
+    request.res.setHeader('Set-Cookie',accessTokenCookie)
+    return {user};
   }
 
   @ApiResponse({
