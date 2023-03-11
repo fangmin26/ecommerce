@@ -18,33 +18,35 @@ export class ProductController {
      await this.productService.create(createProductDto)
   }
 
+
+
   @Get()
   async getProductAll(){
     await this.productService.getAll()
   }
 
-  @Get(':id')
-  async getProductById(@Param('id') id:number){
-    if(id!== undefined){
-      return this.productService.getById(id)
-    }else{
-      throw new HttpException('product id가 없습니다',HttpStatus.NOT_FOUND)
-    }
-  }
+  // @Get(':id')
+  // async getProductById(@Param('id') id:number){
+  //   if(id!== undefined){
+  //     return this.productService.getById(id)
+  //   }else{
+  //     throw new HttpException('product id가 없습니다',HttpStatus.NOT_FOUND)
+  //   }
+  // }
 
-  @Post('edit')
-  async edit(@Body() updatedProductDto:UpdatedProductDto, @Body('id') id:number){
-    await this.productService.update(updatedProductDto,id)
-  }
+  // @Post('edit')
+  // async edit(@Body() updatedProductDto:UpdatedProductDto, @Body('id') id:number){
+  //   await this.productService.update(updatedProductDto,id)
+  // }
 
-  @Post('delete')
-  async deleteProduct(@Body('id') id:number){
-    if(id!== undefined){
-      return this.productService.deleteProduct(id)
-    }else{
-      throw new HttpException('product id가 없습니다',HttpStatus.NOT_FOUND)
-    }
-  }
+  // @Post('delete')
+  // async deleteProduct(@Body('id') id:number){
+  //   if(id!== undefined){
+  //     return this.productService.deleteProduct(id)
+  //   }else{
+  //     throw new HttpException('product id가 없습니다',HttpStatus.NOT_FOUND)
+  //   }
+  // }
 
 
 }

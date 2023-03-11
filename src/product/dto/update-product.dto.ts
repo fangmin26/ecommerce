@@ -5,7 +5,7 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import {  Entity, IsNull } from "typeorm";
 
 @Entity()
-export class UpdatedProductDto extends AbstractEntityExceptId {
+export class UpdatedProductDto {
     // @ApiProperty()
     // @IsString()
     // @IsNotEmpty()

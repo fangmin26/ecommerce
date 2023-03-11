@@ -88,11 +88,13 @@ export class AuthService {
 
 
   public generateJWT(userId: string){ //payload에 userId를 넣는다는 의미
-    const payload: TokenPayload = { userId }
+    // const payload: TokenPayload = { userId }
+    // const token = this.jwtService.sign(payload)
+
+    // return token
+    const payload: TokenPayload = {userId}
     const token = this.jwtService.sign(payload)
-    // console.log(token ,"--------------token")
-    // console.log(payload)
-    return token
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`
   }
 
   public sendEmail(email: string) {
@@ -209,7 +211,7 @@ export class AuthService {
   }
   }
 
-  async getPassword (){
 
-  }
+
+ 
 }

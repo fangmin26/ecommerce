@@ -6,10 +6,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TransformInterceptor } from './common/interceptor/transfor.interceptor';
 import {config} from 'aws-sdk'
 import { ConfigService } from '@nestjs/config';
+import * as cookieParser from 'cookie-parser'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.use(cookieParser())
   app.useGlobalInterceptors(new TransformInterceptor())
   app.useGlobalInterceptors(new ClassSerializerInterceptor(
     app.get(Reflector)

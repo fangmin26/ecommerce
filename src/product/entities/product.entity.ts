@@ -1,13 +1,23 @@
+import { Category } from "@root/category/entities/category.entity";
+import { Comment } from "@root/comment/entities/comment.entity";
 import {  AbstractEntityExceptId } from "@root/user/entities/abstract.entity";
-import { Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
-export class Product extends AbstractEntityExceptId{
-//  @ManyToMany()
-//   public category?: string[]
+export class Product{
+ 
+  @PrimaryGeneratedColumn('uuid')
+  public id: string;
 
-  @PrimaryGeneratedColumn()//productnumber용으로 만듬
-  id:number;
+//  @ManyToMany(
+//   ()=>Category,
+//   (category: Category) =>category.products
+//  )
+//  @JoinTable()
+//   public categories: Category[]
+
+  // @PrimaryGeneratedColumn()//productnumber용으로 만듬
+  // id:number;
 
   @Column({nullable:true})
   public title: string
@@ -32,4 +42,13 @@ export class Product extends AbstractEntityExceptId{
 
   @Column()
   public price: number
+
+  @OneToMany(
+    () => Comment,
+    (comment: Comment) => comment.product,
+    {nullable:true}
+  )
+  @JoinColumn()
+  public comments?: Comment[]
+
 }

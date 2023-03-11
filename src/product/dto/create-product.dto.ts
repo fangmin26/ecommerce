@@ -1,15 +1,19 @@
 
 import { ApiProperty } from "@nestjs/swagger";
+import { Category } from "@root/category/entities/category.entity";
 import {  AbstractEntityExceptId } from "@user/entities/abstract.entity";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import {  Entity } from "typeorm";
+// import { Category } from "aws-sdk/clients/cloudformation";
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import {  Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class CreateProductDto extends AbstractEntityExceptId {
+export class CreateProductDto  {
+    // @PrimaryGeneratedColumn('uuid')
+    // public id: string;
+
     // @ApiProperty()
-    // @IsString()
     // @IsNotEmpty()
-    // public category: string[]
+    // public categories: Category[]
 
     @ApiProperty()
     @IsString()
