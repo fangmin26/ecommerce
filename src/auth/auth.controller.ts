@@ -129,7 +129,7 @@ export class AuthController {
 
    @ApiResponse({status:200, description:"passwordfind by email success"})
    @ApiResponse({status:401, description:"forbidden"})
-   @Post('passwordfind')
+   @Post('password/findbyemail')
    async findPassword(@Body('email') email:string){
     const findUser = await this.userService.findPasswordByEmail(email)
     await this.authService.sendPasswordVerification(findUser.email)
@@ -139,7 +139,7 @@ export class AuthController {
 
    @ApiResponse({status:200, description:"passwordchange by email success"})
    @ApiResponse({status:401, description:"forbidden"})
-   @Put('password/change')
+   @Put('password/changebyemail')
    async changePassword(@Body() passwordChangeDto: PasswordChangeDto){
     const passchange =await this.authService.changePassword(passwordChangeDto);
     console.log(passchange,'-------------------passchange')

@@ -70,7 +70,7 @@ export class UserController {
   
   @ApiResponse({status:200, description:"passwordchange success"})
   @ApiResponse({status:401, description:"forbidden"})
-  @Post('password/change')
+  @Post('password/checkandChange')
   @UseGuards(JwtAuthGuard)
   async changePasswordIn(@Req() request:RequestWithUserInterface, @Body('password') password:string, @Body('checkpassword')checkpassword:string){
     const {user} = request
