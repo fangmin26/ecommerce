@@ -13,9 +13,14 @@ export class ProductService {
   ){}
 
   async create(createProductDto: CreateProductDto) {
-    const newProduct = await this.productRepository.create(createProductDto)
-    await this.productRepository.save(newProduct)
-    return newProduct;
+      const alreadyExist = await this.getByTitle(createProductDto.title)
+      if(alreadyExist===null){
+        const newProduct = this.productRepository.create(createProductDto)
+        await this.productRepository.save(newProduct)
+        return newProduct;
+      }else{
+        throw new HttpException('title이 존재합니다',HttpStatus.BAD_REQUEST)
+      }
   }
 
   async getAll(){
@@ -23,7 +28,7 @@ export class ProductService {
     return await this.productRepository.find({})
   }
 
-  async getById(id:number){
+  async getById(id:string){
     const findId = await this.productRepository.findOneBy({id})
     try {
       if(findId&& findId!== null){
@@ -35,27 +40,35 @@ export class ProductService {
       throw new HttpException('id가 없습니다.', HttpStatus.NOT_FOUND)
     }
   }
-
-  async update( updatedProductDto:UpdatedProductDto, id:number) {
-    // const findId = await this.productRepository.findOneBy({id})
-   const findId = await this.getById(id)
-    try {
-      await this.productRepository.update({id},{
-        title: updatedProductDto.title,
-        content: updatedProductDto.content,
-        startFunding: updatedProductDto.startFunding,
-        startDeleviery: updatedProductDto.startDeleviery,
-        deliveryFee: updatedProductDto.deliveryFee,
-        productLimit: updatedProductDto.productLimit,
-        price: updatedProductDto.price 
-      })
-      return 'success'
-    } catch (error) {
-      throw new HttpException('업데이트에러.', HttpStatus.BAD_REQUEST)
-    }
+  
+  async getByTitle(title:string){
+    return await this.productRepository.findOneBy({title})
   }
 
-  async deleteProduct(id:number){
+  async update( updatedProductDto:UpdatedProductDto, id:string) {
+   const alreadyExist = await this.getById(id)
+   if(alreadyExist!==null){
+      try {
+        await this.productRepository.update({id},{
+          title: updatedProductDto.title,
+          content: updatedProductDto.content,
+          startFunding: updatedProductDto.startFunding,
+          startDeleviery: updatedProductDto.startDeleviery,
+          deliveryFee: updatedProductDto.deliveryFee,
+          productLimit: updatedProductDto.productLimit,
+          price: updatedProductDto.price 
+        })
+        return 'success'
+      } catch (error) {
+        throw new HttpException('업데이트에러.', HttpStatus.BAD_REQUEST)
+      }
+    }else{
+      throw new HttpException('수정할 productNum이 없습니다.', HttpStatus.BAD_REQUEST)
+    }
+   }
+
+
+  async deleteProduct(id:string){
     const findId = await this.getById(id)
 
     try {

@@ -15,7 +15,7 @@ export class ProductController {
   @Post()
   @UseGuards(RoleGuard(Role.USER))
   async create(@Body() createProductDto: CreateProductDto) {
-     await this.productService.create(createProductDto)
+     return await this.productService.create(createProductDto)
   }
 
   @Get()
@@ -24,7 +24,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  async getProductById(@Param('id') id:number){
+  async getProductById(@Param('id') id:string){
     if(id!== undefined){
       return this.productService.getById(id)
     }else{
@@ -32,19 +32,19 @@ export class ProductController {
     }
   }
 
-  @Post('edit')
-  async edit(@Body() updatedProductDto:UpdatedProductDto, @Body('id') id:number){
+  @Get('edit/:id')
+  async edit(@Body() updatedProductDto:UpdatedProductDto, @Param('id') id:string){
+
     await this.productService.update(updatedProductDto,id)
   }
 
-  @Post('delete')
-  async deleteProduct(@Body('id') id:number){
+  @Get('delete/:id')
+  async deleteProduct(@Param('id') id:string){
+    console.log(id,'id')
     if(id!== undefined){
       return this.productService.deleteProduct(id)
     }else{
       throw new HttpException('product id가 없습니다',HttpStatus.NOT_FOUND)
     }
   }
-
-
 }

@@ -1,15 +1,11 @@
 
 import { ApiProperty } from "@nestjs/swagger";
-import {  AbstractEntityExceptId } from "@user/entities/abstract.entity";
+import { AbstractEntity } from "@root/user/entities/abstract.entity";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import {  Entity } from "typeorm";
 
 @Entity()
-export class CreateProductDto extends AbstractEntityExceptId {
-    // @ApiProperty()
-    // @IsString()
-    // @IsNotEmpty()
-    // public category: string[]
+export class CreateProductDto extends AbstractEntity {
 
     @ApiProperty()
     @IsString()
@@ -50,6 +46,11 @@ export class CreateProductDto extends AbstractEntityExceptId {
     @IsNumber()
     @IsNotEmpty()
     public price: number
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    public productNum: number
 
 
 }
