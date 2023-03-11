@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, UseGuards, Put } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, UseGuards, Put, HttpCode } from "@nestjs/common";
 import { CreateUserDto } from "@user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
 import { ApiCreatedResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -12,6 +12,7 @@ import { JwtAuthGuard } from "./guard/jwtAuth.guard";
 import { AuthService } from "./auth.service";
 import { UserService } from "@user/user.service";
 import { LocalAuthGuard } from "./guard/localAuth.guard";
+import JwtRefreshGuard from "./guard/jwt-refresh-auth.guard";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -52,9 +53,14 @@ export class AuthController {
   async login(@Req() request: RequestWithUserInterface){
     const user = request.user //로그인한 상대는 유저
     const accessTokenCookie = await this.authService.generateJWT(user.id)
-    // request.res.setHeader('Set-Cookie','adfadf')
-    request.res.setHeader('Set-Cookie',accessTokenCookie)
-    return {user};
+    const {
+      cookie: refreshTokenCookie,
+      token: refreshToken
+    } = await this.authService.generateRefreshToken(user.id)
+    // request.res.setHeader('Set-Cookie',accessTokenCookie)
+    await this.userService.setCurrentsRefreshToken(refreshToken, user.id)
+    request.res.setHeader('Set-Cookie',[accessTokenCookie,refreshTokenCookie])
+    return {user,accessTokenCookie}; //확인때문에 accessToken추가
   }
 
   @ApiResponse({
@@ -146,6 +152,22 @@ export class AuthController {
     const passchange =await this.authService.changePassword(passwordChangeDto);
     console.log(passchange,'-------------------passchange')
     return 'changepassword success'
+   }
+
+   @UseGuards(JwtRefreshGuard)
+   @Get('refresh')
+   refresh(@Req() req:RequestWithUserInterface) {
+    const accessTokenCookie = this.authService.generateJWT(req.user.id)
+    req.res.setHeader('Set-Cookie',accessTokenCookie)
+    return req.user;
+   }
+
+   @UseGuards(JwtAuthGuard)
+   @Post('logout')
+   @HttpCode(200)
+   async logout(@Req() request:RequestWithUserInterface) {
+    await this.userService.removeRefreshToken(request.user.id)
+    request.res.setHeader('Set-Cookie',this.authService.getCookiesForLogout())
    }
 }
 

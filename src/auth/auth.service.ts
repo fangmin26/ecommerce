@@ -208,7 +208,20 @@ export class AuthService {
   }
   }
 
-  async getPassword (){
+  public generateRefreshToken(userId: string) {
+    const payload: TokenPayload = {userId};
+    const token = this.jwtService.sign(payload,{
+      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION_TIME')
+    })
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESH_EXPIRATION_TIME')}`
+    return {cookie, token}
+  }
 
+  public getCookiesForLogout() {
+    return [
+      `Authentication=; HttpOnly; Path=/; Max-Age=0`,
+      `Refresh=; HttpOnly; Path=/; Max-Age=0`
+    ]
   }
 }

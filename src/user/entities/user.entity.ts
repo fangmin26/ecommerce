@@ -76,6 +76,11 @@ export class User extends AbstractEntity{
   @JoinColumn()
   public profile: Profile
 
+  @ApiProperty()
+  @Column({nullable:true})
+  @Exclude()
+  public currentHashedRefreshToken?: string;
+  
   // @OneToMany(()=>Product, (product:Product) =>product.funding)
   // public fundingProduct:Product[]
 
