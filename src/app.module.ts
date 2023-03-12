@@ -12,6 +12,8 @@ import { EmailModule } from '@email/email.module'; //절대경로 잡아주는�
 import { ProfileModule } from '@profile/profile.module';
 import { FilesModule } from '@files/files.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { CommentModule } from './comment/comment.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -62,7 +64,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     TerminusModule,
     ProfileModule,
     FilesModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    CommentModule,
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [AppService],

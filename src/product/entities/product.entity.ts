@@ -1,11 +1,26 @@
 
 import { AbstractEntity } from "@root/user/entities/abstract.entity";
-import { BeforeInsert, Column, Entity} from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany} from "typeorm";
 import * as numberGenerator from "number-generator";
+import { Comment } from "@root/comment/entities/comment.entity";
+import { Category } from "@root/category/entities/category.entity";
+
 @Entity()
 export class Product extends AbstractEntity{
 
-  @Column({nullable:true})
+
+  @OneToMany(() => Comment,(comment) => comment.product,{nullable:true})
+  @JoinColumn()
+  public comments?: Comment[]
+
+  @ManyToMany(
+  ()=>Category,
+  (category: Category) =>category.products,{nullable:true}
+  )
+  @JoinTable()
+  public categories: Category[]
+
+  @Column()
   public title: string
 
   @Column()
@@ -29,18 +44,11 @@ export class Product extends AbstractEntity{
   @Column()
   public price: number
 
-  @Column()
+  @Column({nullable:true})
   public productNum: number
 
   @BeforeInsert()
   async generateProductNum(){
-    const today =
-    String(new Date().getFullYear())
-    +String(new Date().getDate())
-    +String(new Date().getMonth())
-    +String(new Date().getDay())
-    +String(new Date().getHours())
-    +String(new Date().getMinutes())+this.title+this.content
-   this.productNum = await numberGenerator.murmurhash2_x86_32(today)
+   this.productNum = await numberGenerator.murmurhash2_x86_32(this.title)
   }
 }
