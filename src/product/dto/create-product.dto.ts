@@ -50,7 +50,7 @@ export class CreateProductDto extends AbstractEntity {
     @ApiProperty()
     @IsNumber()
     @IsNotEmpty()
-    public productNum: number
+    public productNum: string
 
 
 }

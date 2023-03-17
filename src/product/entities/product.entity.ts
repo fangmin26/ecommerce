@@ -30,17 +30,18 @@ export class Product extends AbstractEntity{
   public price: number
 
   @Column()
-  public productNum: number
+  public productNum: string
 
   @BeforeInsert()
   async generateProductNum(){
-    const today =
-    String(new Date().getFullYear())
-    +String(new Date().getDate())
-    +String(new Date().getMonth())
-    +String(new Date().getDay())
-    +String(new Date().getHours())
-    +String(new Date().getMinutes())+this.title+this.content
-   this.productNum = await numberGenerator.murmurhash2_x86_32(today)
+    const randomNum = Math.floor(Math.random() * 10000) + 1;
+    var today = new Date();
+
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+
+    var dateString = year + month + day;
+   this.productNum = dateString+randomNum
   }
 }
