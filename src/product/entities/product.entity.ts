@@ -1,7 +1,9 @@
 
 import { AbstractEntity } from "@root/user/entities/abstract.entity";
-import { BeforeInsert, Column, Entity} from "typeorm";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, OneToMany} from "typeorm";
 import * as numberGenerator from "number-generator";
+import { User } from "@root/user/entities/user.entity";
+import { Comment } from "@root/comment/entities/comment.entity";
 @Entity()
 export class Product extends AbstractEntity{
 
@@ -31,6 +33,19 @@ export class Product extends AbstractEntity{
 
   @Column()
   public productNum: string
+
+  @ManyToMany(
+    () => User, 
+    (user:User) => user.fundingProducts
+  )
+ @JoinTable()
+  public fundingList: User[]
+
+  @OneToMany(
+    () => Comment,
+    (comment: Comment) => comment.product
+  )
+  public comment: Comment[]
 
   @BeforeInsert()
   async generateProductNum(){
