@@ -70,6 +70,7 @@ services:
       # - 443:443
     depends_on:
       - postgres_db #상단 이름 인식
+      # - redis
     networks:
       - postgres-network
       
@@ -86,26 +87,20 @@ services:
     networks:
       - postgres-network
 
-  # nestjs_api:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #     # Only will build development stage from our dockerfile
-  #     target: development
-  #   volumes:
-  #     - .:/usr/src/app
-  #   env_file:
-  #     - .env
-  #   # Run a command against the development stage of the image
-  #   command: npm run start:dev
+  # redis:
+  #   image: "redis:alpine"
   #   ports:
-  #     # - 3000:3000
-  #     - 443:443 
-  #     # https://localhost 로 가능 
+  #     - 6379:6379
+ 
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   environment:
+  #     - REDIS_HOST=local:redis:6379
+  #   ports:
+  #     - 8081:8081
   #   depends_on:
-  #     - postgres_db
-  #   networks:
-  #     - postgres-network
+  #     - redis
+
 
 volumes:
   postgresql-data:

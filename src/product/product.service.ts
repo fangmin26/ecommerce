@@ -1,15 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdatedProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
-
+import {Cache} from 'cache-manager'
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
-    private productRepository:Repository<Product> 
+    private productRepository:Repository<Product> ,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ){}
 
   async create(createProductDto: CreateProductDto) {
@@ -25,7 +26,14 @@ export class ProductService {
 
   async getAll(){
     console.log(await this.productRepository.find({}))
-    return await this.productRepository.find({})
+    const products =  await this.productRepository.find({})
+    const cacheProduct = await this.cacheManager.get('products')
+    if(cacheProduct){
+      return cacheProduct
+    }else{
+      await this.cacheManager.set('products', products)
+      return products
+    }
   }
 
   async getById(id:string){

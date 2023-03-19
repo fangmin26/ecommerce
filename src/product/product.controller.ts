@@ -20,7 +20,8 @@ export class ProductController {
 
   @Get()
   async getProductAll(){
-    await this.productService.getAll()
+    return await this.productService.getAll()
+    
   }
 
   @Get(':id')

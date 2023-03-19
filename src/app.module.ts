@@ -13,6 +13,7 @@ import { ProfileModule } from '@profile/profile.module';
 import { FilesModule } from '@files/files.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CommentModule } from './comment/comment.module';
+import { RedisCacheModule } from './redis-cache/redis-cache.module';
 
 @Module({
   imports: [
@@ -51,7 +52,16 @@ import { CommentModule } from './comment/comment.module';
         AWS_REGION:Joi.string().required(),
         AWS_ACCESS_KEY_ID:Joi.string().required(),
         ASW_SECRET_ACCESS_KEY:Joi.string().required(),
-        AWS_PUBLIC_BUCKET_NAME:Joi.string().required()
+        AWS_PUBLIC_BUCKET_NAME:Joi.string().required(),
+
+        // REDIS_HOST: Joi.string().required(),
+        // REDIS_PORT:Joi.number().required(),
+        
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT:Joi.number().required(),
+        REDIS_USERNAME: Joi.string().required(),
+        REDIS_PASSWORD: Joi.string().required(),
+        REDIS_TTL: Joi.number().required(),
 
       }))
     }),
@@ -64,7 +74,8 @@ import { CommentModule } from './comment/comment.module';
     ProfileModule,
     FilesModule,
     ScheduleModule.forRoot(),
-    CommentModule
+    CommentModule,
+    RedisCacheModule
   ],
   controllers: [AppController],
   providers: [AppService],
