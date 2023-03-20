@@ -70,7 +70,7 @@ services:
       # - 443:443
     depends_on:
       - postgres_db #상단 이름 인식
-      # - redis
+      - redis
     networks:
       - postgres-network
       
@@ -87,26 +87,35 @@ services:
     networks:
       - postgres-network
 
-  # redis:
-  #   image: "redis:alpine"
-  #   ports:
-  #     - 6379:6379
- 
-  # redis-commander:
-  #   image: rediscommander/redis-commander:latest
-  #   environment:
-  #     - REDIS_HOST=local:redis:6379
-  #   ports:
-  #     - 8081:8081
-  #   depends_on:
-  #     - redis
+  redis:
+    image: "redis:alpine"
+    env_file: 
+      - .env
+    ports:
+      - 6379:6379
+    networks:
+      - postgres-network
+    volumes:
+      - redis:/data
 
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+    networks:
+      - postgres-network
 
 volumes:
   postgresql-data:
     driver: cio
     driver_opts:
       profile: "POSTGRESQL"
+  redis:
+    driver: local
 
 networks:
   postgres-network:

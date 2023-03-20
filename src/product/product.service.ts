@@ -25,13 +25,14 @@ export class ProductService {
   }
 
   async getAll(){
-    console.log(await this.productRepository.find({}))
     const products =  await this.productRepository.find({})
     const cacheProduct = await this.cacheManager.get('products')
     if(cacheProduct){
+      console.log('cache')
       return cacheProduct
     }else{
       await this.cacheManager.set('products', products)
+      console.log('save')
       return products
     }
   }

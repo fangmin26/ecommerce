@@ -10,6 +10,7 @@ import Bootpay from "@bootpay/backend-js";
 import { ConfirmAuthenticate } from "@user/dto/confirm-authenticate.dto";
 import { PasswordChangeDto } from "@user/dto/password-change.dto";
 import { EmailService } from "@email/email.service";
+import { PostgresErrorCode } from "@root/database/postgresErrroCode";
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,9 @@ export class AuthService {
     try {
       return await  this.userService.create(createUserDto)
     }catch (error) {
+      if(error?.code === PostgresErrorCode.UniqueViolation){
+        throw new HttpException('email이 이 있습니다.', HttpStatus.CONFLICT)
+      }
       throw new HttpException('something went wrong', HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
@@ -155,7 +159,13 @@ export class AuthService {
       }
       throw new BadRequestException('just bad request')
     }catch (err){
-      throw  new BadRequestException('bad confirmation token')
+      //err
+      if(err?.name ==='TokenExpiredError'){
+        throw  new BadRequestException('token expired error')
+      }else{
+        throw  new BadRequestException('bad confirmation token')
+      }
+ 
     }
   }
 

@@ -1,6 +1,6 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { redisStore } from 'cache-manager-redis-store';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
     imports:[
@@ -11,8 +11,8 @@ import { redisStore } from 'cache-manager-redis-store';
                 store: redisStore,
                 host: configService.get("REDIS_HOST"),
                 port: configService.get("REDIS_PORT"),
-                username: configService.get("REDIS_USERNAME"),
-                password: configService.get("REDIS_PASSWORD"),
+                // username: configService.get("REDIS_USERNAME"),
+                // password: configService.get("REDIS_PASSWORD"),
                 ttl: configService.get("REDIS_TTL")
             }),
             isGlobal:true
