@@ -154,6 +154,7 @@ export class AuthService {
       const payload = await this.jwtService.verify(token, {
         secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET')
       })
+
       if (typeof payload === 'object' && 'email' in payload) {
         return payload.email;
       }

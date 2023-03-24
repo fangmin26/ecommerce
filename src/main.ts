@@ -16,10 +16,10 @@ async function bootstrap() {
   ))
 
   const docubuilder = new DocumentBuilder()
-  .setTitle('exam')
-  .setDescription('descrip')
+  .setTitle('mindiz_back')
+  .setDescription('cloudfunding_rebuilding')
   .setVersion('1.0')
-  .addTag('ecomm')
+  .addTag('clound funding rebuilding backend project')
   .build()
 
   const document = SwaggerModule.createDocument(app,docubuilder)
