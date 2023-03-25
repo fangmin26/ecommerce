@@ -93,7 +93,10 @@ export class AuthService {
 
   public generateJWT(userId: string){ //payload에 userId를 넣는다는 의미
     const payload: TokenPayload = { userId }
-    const token = this.jwtService.sign(payload)
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: this.configService.get('JWT_EXPIRATION_TIME')
+    })
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`
     // return token
   }

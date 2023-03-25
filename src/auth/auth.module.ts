@@ -23,16 +23,17 @@ import { UserModule } from '@user/user.module';
       expandVariables: true
     }),
     EmailModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) =>({
-        secret: configService.get('JWT_SECRET'),
-        signOptions: {
-          expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}` //.env로 바로 하는 경우도 있는데, 매뉴얼적인 스타일
-        }
-      })
-    }),
+    JwtModule.register({}), //service 모듈내부에서 적용을하려면 이렇게 적용
+    // JwtModule.registerAsync({
+    //   // imports: [ConfigModule],
+    //   // inject: [ConfigService],
+    //   // useFactory: async (configService: ConfigService) =>({
+    //   //   secret: configService.get('JWT_SECRET'),
+    //   //   signOptions: {
+    //   //     expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}` //.env로 바로 하는 경우도 있는데, 매뉴얼적인 스타일
+    //   //   }
+    //   // })
+    // }),
     FacebookAuthModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
