@@ -164,10 +164,13 @@ export class UserService {
       currentHashedRefreshToken:null
     })
   } 
+  // @Cron('10 * * * * *') //10초마다 로그 =>구독,결제 시 사용많이함 (정기결제같은거 **)
+  //  handleCron(){
+  //   this.logger.debug('cron logger')
+  // }
+
   @Cron('10 * * * * *') //10초마다 로그 =>구독,결제 시 사용많이함 (정기결제같은거 **)
    handleCron(){
     this.logger.debug('cron logger')
   }
-
-
 }

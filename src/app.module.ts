@@ -14,6 +14,7 @@ import { FilesModule } from '@files/files.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CommentModule } from './comment/comment.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
+import { LibraryModule } from './library/library.module';
 import * as cors from 'cors';
 
 @Module({
@@ -61,6 +62,7 @@ import * as cors from 'cors';
         // REDIS_PASSWORD: Joi.string().required(),
         REDIS_TTL: Joi.number().required(), //제한시간
 
+        LIBRARY_ADDRESS: Joi.string().required()
       }))
     }),
     DatabaseModule,
@@ -73,7 +75,8 @@ import * as cors from 'cors';
     FilesModule,
     ScheduleModule.forRoot(),
     CommentModule,
-    RedisCacheModule
+    RedisCacheModule,
+    LibraryModule
   ],
   controllers: [AppController],
   providers: [AppService],
