@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, UseGuards, Put, HttpCode } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, UseGuards, Put, HttpCode, Inject, CACHE_MANAGER } from "@nestjs/common";
 import { CreateUserDto } from "@user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
 import { ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -13,14 +13,16 @@ import { AuthService } from "./auth.service";
 import { UserService } from "@user/user.service";
 import { LocalAuthGuard } from "./guard/localAuth.guard";
 import JwtRefreshGuard from "./guard/jwt-refresh-auth.guard";
-
+import {Cache} from 'cache-manager'
 @ApiTags('auth')
 @Controller('auth')
 // @UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    @Inject(CACHE_MANAGER)
+    private cacheManager : Cache
   ) {}
 
   @Post('signup')
@@ -51,8 +53,10 @@ export class AuthController {
   })
   @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: '로그인 - email,username,password', description: '이메일 로그인',})
+
   async login(@Req() request: RequestWithUserInterface){
     const user = request.user //로그인한 상대는 유저
+    await this.cacheManager.set(user.id, user)
     const accessTokenCookie = await this.authService.generateJWT(user.id)
     const {
       cookie: refreshTokenCookie,
@@ -73,7 +77,22 @@ export class AuthController {
   @ApiOperation({ summary: 'jwt토큰으로 프로필가져오기', description: '프로필 가져오기',})
   async getProfile(@Req() request: RequestWithUserInterface){
     const {user} = request
-    return user;
+    const cachData =  await this.userService.setCacheData(request.user.id)
+    console.log(cachData,'cacheData')
+    return cachData ?? user 
+    // return user;
+
+    
+    // const cacheData= await this.cacheManager.get(user.id)
+    // console.log(cacheData,'cahc')
+    // console.log(typeof cacheData,'typeof cach')
+    // if(cacheData){
+    //   console.log(cacheData,'cachedata')
+    //   return cacheData
+    // }else{
+    //   return user;
+    // }
+
 
   }
 
@@ -183,6 +202,7 @@ export class AuthController {
    @UseGuards(JwtAuthGuard)
    @HttpCode(200)
    async logout(@Req() request:RequestWithUserInterface) {
+    await this.cacheManager.del(request.user.id)
     await this.userService.removeRefreshToken(request.user.id)
     request.res.setHeader('Set-Cookie',this.authService.getCookiesForLogout())
    }

@@ -13,7 +13,8 @@ import * as redisStore from 'cache-manager-redis-store';
                 port: configService.get("REDIS_PORT"),
                 // username: configService.get("REDIS_USERNAME"),
                 // password: configService.get("REDIS_PASSWORD"),
-                ttl: configService.get("REDIS_TTL")
+                ttl: 1000
+                // ttl: configService.get("REDIS_TTL") //제한시간
             }),
             isGlobal:true
         })

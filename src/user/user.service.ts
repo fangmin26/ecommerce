@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import {  Repository } from "typeorm";
@@ -11,7 +11,7 @@ import { Cron } from "@nestjs/schedule";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as bcrypt from 'bcryptjs'
-
+import {Cache} from 'cache-manager'
 @Injectable()
 export class UserService {
   constructor(
@@ -19,7 +19,9 @@ export class UserService {
     private userRepository:Repository<User>,
     private readonly filesService:FilesService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache
   ) {}
 
   private readonly logger = new Logger(UserService.name)
@@ -53,10 +55,17 @@ export class UserService {
 
   async getById(id:string){ //id로 검색
     const user = await this.userRepository.findOneBy({id})
-    console.log(user)
-    console.log(id)
     if (user) return user;
     throw  new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND)
+  }
+
+  async setCacheData(id:string){
+    const user = await this.getById(id)
+    const cacheData = await this.cacheManager.get(id)
+    if(cacheData){
+      return cacheData
+    }
+    return user;
   }
 
   async findPasswordByEmail(email:string ){

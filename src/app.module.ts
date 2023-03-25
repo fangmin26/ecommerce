@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from "@nestjs/config";
@@ -14,6 +14,7 @@ import { FilesModule } from '@files/files.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CommentModule } from './comment/comment.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
+import * as cors from 'cors';
 
 @Module({
   imports: [
@@ -58,7 +59,7 @@ import { RedisCacheModule } from './redis-cache/redis-cache.module';
         REDIS_PORT:Joi.number().required(),
         // REDIS_USERNAME: Joi.string().required(),
         // REDIS_PASSWORD: Joi.string().required(),
-        REDIS_TTL: Joi.number().required(),
+        REDIS_TTL: Joi.number().required(), //제한시간
 
       }))
     }),
@@ -78,3 +79,13 @@ import { RedisCacheModule } from './redis-cache/redis-cache.module';
   providers: [AppService],
 })
 export class AppModule {}
+// export class AppModule implements NestModule{
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(cors({
+//         origin: 'http://localhost:3001', // 클라이언트 도메인
+//         credentials: true, // 쿠키를 전송할 수 있도록 설정
+//       }))
+//       .forRoutes('*');
+//     }
+//   }
