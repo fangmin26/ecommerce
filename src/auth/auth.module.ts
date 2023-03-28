@@ -12,7 +12,7 @@ import { GoogleAuthModule } from '@nestjs-hybrid-auth/google';
 import { GoogleAuthConfig } from './strategy/google.auth.config';
 import { EmailModule } from '@email/email.module';
 import { UserModule } from '@user/user.module';
-
+import {ThrottlerModule} from '@nestjs/throttler'
 @Module({
   imports: [
     UserModule,
@@ -43,6 +43,10 @@ import { UserModule } from '@user/user.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useClass: GoogleAuthConfig
+    }),
+    ThrottlerModule.forRoot({
+      ttl:200,
+      limit: 2  //60초동안 10번만 할수 있음 - Ddos 공격에 대비 , bot 공격 대비 
     })
   ],
   controllers: [AuthController],

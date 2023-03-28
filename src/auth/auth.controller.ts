@@ -14,6 +14,7 @@ import { UserService } from "@user/user.service";
 import { LocalAuthGuard } from "./guard/localAuth.guard";
 import JwtRefreshGuard from "./guard/jwt-refresh-auth.guard";
 import {Cache} from 'cache-manager'
+import { Throttle, ThrottlerGuard } from "@nestjs/throttler";
 @ApiTags('auth')
 @Controller('auth')
 // @UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
@@ -46,14 +47,17 @@ export class AuthController {
     return 'success'
   }
 
+
   @Post('login')
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5,30)
   @ApiResponse({
     description:'the record has been seccuess',
     type:User
   })
   @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: '로그인 - email,username,password', description: '이메일 로그인',})
-
+  @Throttle(2, 60)
   async login(@Req() request: RequestWithUserInterface){
     const user = request.user //로그인한 상대는 유저
     await this.cacheManager.set(user.id, user)

@@ -32,7 +32,7 @@ async function bootstrap() {
     secretAccessKey: configService.get('ASW_SECRET_ACCESS_KEY'),
     region: configService.get('AWS_REGION')
   })
-  await app.listen(3000);
+  await app.listen(8000);
   // await app.listen(443);  //https
   // await app.listen(80); //http
 }

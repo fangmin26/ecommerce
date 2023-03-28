@@ -86,7 +86,7 @@ export class AppModule {}
 //   configure(consumer: MiddlewareConsumer) {
 //     consumer
 //       .apply(cors({
-//         origin: 'http://localhost:3001', // 클라이언트 도메인
+//         origin: 'http://localhost:3000', // 클라이언트 도메인
 //         credentials: true, // 쿠키를 전송할 수 있도록 설정
 //       }))
 //       .forRoutes('*');
