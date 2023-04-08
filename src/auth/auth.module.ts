@@ -12,6 +12,8 @@ import { UserModule } from '@user/user.module';
 import {ThrottlerModule} from '@nestjs/throttler'
 import { GoogleStrategy } from './strategy/google.strategy';
 import { NaverStrategy } from './strategy/naver.strategy';
+import { FacebookStrategy } from './strategy/facebook.strategy';
+import { KakaoStrategy } from './strategy/kakao.strategy';
 @Module({
   imports: [
     UserModule,
@@ -40,6 +42,6 @@ import { NaverStrategy } from './strategy/naver.strategy';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, NaverStrategy]
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, NaverStrategy, FacebookStrategy, KakaoStrategy]
 })
 export class AuthModule {}

@@ -17,6 +17,8 @@ import { GoogleOauthGuard } from "./guard/googleAuth.guard";
 import { HttpStatusCode } from "axios";
 import { NaverStrategy } from "./strategy/naver.strategy";
 import { NaverGuard } from "./guard/naverAuth.guard";
+import { FacebookGuard } from "./guard/facebookAuth.guard";
+import { KakaoGuard } from "./guard/kakaoAuth.guard";
 @ApiTags('auth')
 @Controller('auth')
 // @UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
@@ -118,30 +120,28 @@ export class AuthController {
   return await this.authService.authenticateConfirm(confirmAuthenticateDto)
   }
 
-  // @Get("facebook")
-  // @ApiOperation({ summary: 'facebook login', description: 'facebook login',})
-  // @ApiResponse({status:200, description:"facebook login"})
-  // @ApiResponse({status:401, description:"forbidden"})
-  // @UseFacebookAuth()
+   @Get('kakao')
+   @UseGuards(KakaoGuard)
+   loginWithKakao(){
+    return HttpStatusCode.Ok;
+   }
 
-  // loginWithFacebook(){
-  // return 'login facebook'
-  // }
+   @Get('kakao/callback')
+   @UseGuards(KakaoGuard)
+   kakaoCallback(@Req() req) {
+    console.log(req, ' req, kakao')
+   }
 
-  // @Get("facebook/callback")
-  // @ApiOperation({ summary: 'facebook login callback', description: 'facebook login callback',})
-  // @ApiResponse({status:200, description:"facebook callback success"})
-  // @ApiResponse({status:401, description:"forbidden"})
-  // @UseFacebookAuth()
-  //  facebookCallback(@Req() req):Partial<FacebookAuthResult>{
-  //   const result: FacebookAuthResult = req.hybridAuthResult;
-  //   console.log(result)
-  //   return{
-  //     accessToken: result.accessToken,
-  //     refreshToken: result.refreshToken,
-  //     profile: result.profile
-  //   };
-  //  }
+   @Get('facebook')
+   @UseGuards(FacebookGuard)
+   loginWithFacebook(){
+    return HttpStatusCode.Ok;
+   }
+   @Get('facebook/callback')
+   @UseGuards(FacebookGuard)
+   facebookCallback(@Req() req){
+    console.log(req,' req facebook')
+   }
 
    @Get('naver')
    @UseGuards(NaverGuard)
