@@ -15,6 +15,8 @@ import {Cache} from 'cache-manager'
 import { Throttle, ThrottlerGuard } from "@nestjs/throttler";
 import { GoogleOauthGuard } from "./guard/googleAuth.guard";
 import { HttpStatusCode } from "axios";
+import { NaverStrategy } from "./strategy/naver.strategy";
+import { NaverGuard } from "./guard/naverAuth.guard";
 @ApiTags('auth')
 @Controller('auth')
 // @UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
@@ -140,6 +142,18 @@ export class AuthController {
   //     profile: result.profile
   //   };
   //  }
+
+   @Get('naver')
+   @UseGuards(NaverGuard)
+   loginWithNaver(){
+    return HttpStatusCode.Ok;
+   }
+
+   @Get('naver/callback')
+   @UseGuards(NaverGuard)
+   naverCallback(@Req() req){
+    console.log(req, 'req callback')
+   }
 
    @Get('google')
    @ApiOperation({ summary: 'google login', description: 'google login',})

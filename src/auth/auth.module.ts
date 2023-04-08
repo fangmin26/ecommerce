@@ -11,6 +11,7 @@ import { EmailModule } from '@email/email.module';
 import { UserModule } from '@user/user.module';
 import {ThrottlerModule} from '@nestjs/throttler'
 import { GoogleStrategy } from './strategy/google.strategy';
+import { NaverStrategy } from './strategy/naver.strategy';
 @Module({
   imports: [
     UserModule,
@@ -39,6 +40,6 @@ import { GoogleStrategy } from './strategy/google.strategy';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy]
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, NaverStrategy]
 })
 export class AuthModule {}
