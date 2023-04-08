@@ -1,5 +1,8 @@
 export enum Source{
-    EMAIL = 'email',
+    LOCAL = 'local',
     FACEBOOK = 'facebook',
-    GOOGLE = 'google'
+    GOOGLE = 'google',
+    KAKAO = 'kakao',
+    NAVER = 'naver',
+    EMAIL = 'email'
 }

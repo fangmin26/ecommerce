@@ -35,7 +35,7 @@ export class User extends AbstractEntity{
   @Column({
     type: 'enum',
     enum: Source,
-    default: Source.EMAIL
+    default: Source.LOCAL
   })
   public source :  Source;
 
@@ -103,17 +103,21 @@ export class User extends AbstractEntity{
     // this.password = await bcrypt.hash(this.password, 10);
     try {
       this.password = await bcrypt.hash(this.password, 10);
+      this.profile_img = await grabatar.url(
+        this.email,
+        {s: '100',protocol:'https'},
+      )
     } catch (error) {
       console.log(error)
       throw new InternalServerErrorException()
     }
   }
 
-  @BeforeInsert()
-  async genarateProfileImg(){
-    this.profile_img = await grabatar.url(
-      this.email,
-      {s: '100',protocol:'https'},
-    )
-  }
+  // @BeforeInsert()
+  // async genarateProfileImg(){
+  //   this.profile_img = await grabatar.url(
+  //     this.email,
+  //     {s: '100',protocol:'https'},
+  //   )
+  // }
 }

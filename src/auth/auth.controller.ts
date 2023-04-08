@@ -1,9 +1,7 @@
 import { Controller, Get, Post, Body, Req, UseGuards, Put, HttpCode, Inject, CACHE_MANAGER } from "@nestjs/common";
 import { CreateUserDto } from "@user/dto/create-user.dto";
 import { RequestWithUserInterface } from "./requestWithUser.interface";
-import { ApiBody, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { FacebookAuthResult, UseFacebookAuth } from "@nestjs-hybrid-auth/facebook";
-import { GoogleAuthResult, UseGoogleAuth } from "@nestjs-hybrid-auth/google";
+import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { PasswordChangeDto } from "@user/dto/password-change.dto";
 import { User } from "@user/entities/user.entity";
 import { ConfirmAuthenticate } from "@user/dto/confirm-authenticate.dto";
@@ -15,6 +13,8 @@ import { LocalAuthGuard } from "./guard/localAuth.guard";
 import JwtRefreshGuard from "./guard/jwt-refresh-auth.guard";
 import {Cache} from 'cache-manager'
 import { Throttle, ThrottlerGuard } from "@nestjs/throttler";
+import { GoogleOauthGuard } from "./guard/googleAuth.guard";
+import { HttpStatusCode } from "axios";
 @ApiTags('auth')
 @Controller('auth')
 // @UseInterceptors(ClassSerializerInterceptor) //해당부분만 exclude적용
@@ -116,54 +116,55 @@ export class AuthController {
   return await this.authService.authenticateConfirm(confirmAuthenticateDto)
   }
 
-  @Get("facebook")
-  @ApiOperation({ summary: 'facebook login', description: 'facebook login',})
-  @ApiResponse({status:200, description:"facebook login"})
-  @ApiResponse({status:401, description:"forbidden"})
-  @UseFacebookAuth()
+  // @Get("facebook")
+  // @ApiOperation({ summary: 'facebook login', description: 'facebook login',})
+  // @ApiResponse({status:200, description:"facebook login"})
+  // @ApiResponse({status:401, description:"forbidden"})
+  // @UseFacebookAuth()
 
-  loginWithFacebook(){
-  return 'login facebook'
-  }
+  // loginWithFacebook(){
+  // return 'login facebook'
+  // }
 
-  @Get("facebook/callback")
-  @ApiOperation({ summary: 'facebook login callback', description: 'facebook login callback',})
-  @ApiResponse({status:200, description:"facebook callback success"})
-  @ApiResponse({status:401, description:"forbidden"})
-  @UseFacebookAuth()
-   facebookCallback(@Req() req):Partial<FacebookAuthResult>{
-    const result: FacebookAuthResult = req.hybridAuthResult;
-    console.log(result)
-    return{
-      accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
-      profile: result.profile
-    };
-   }
+  // @Get("facebook/callback")
+  // @ApiOperation({ summary: 'facebook login callback', description: 'facebook login callback',})
+  // @ApiResponse({status:200, description:"facebook callback success"})
+  // @ApiResponse({status:401, description:"forbidden"})
+  // @UseFacebookAuth()
+  //  facebookCallback(@Req() req):Partial<FacebookAuthResult>{
+  //   const result: FacebookAuthResult = req.hybridAuthResult;
+  //   console.log(result)
+  //   return{
+  //     accessToken: result.accessToken,
+  //     refreshToken: result.refreshToken,
+  //     profile: result.profile
+  //   };
+  //  }
 
    @Get('google')
    @ApiOperation({ summary: 'google login', description: 'google login',})
    @ApiResponse({status:200, description:"google login success"})
    @ApiResponse({status:401, description:"forbidden"})
-   @UseGoogleAuth()
+   @UseGuards(GoogleOauthGuard)
    loginWithGoogle(){
-    return 'login google'
+    return HttpStatusCode.Ok;
    }
 
    @Get('google/callback')
    @ApiOperation({ summary: 'google login callback', description: 'google login callback',})
    @ApiResponse({status:200, description:"google callback success"})
    @ApiResponse({status:401, description:"forbidden"})
-   @UseGoogleAuth()
+   @UseGuards(GoogleOauthGuard)
    googleCallback(@Req() req){
-    const result: GoogleAuthResult = req.hybridAuthResult;
-    const email = result.profile.emails[0].value
-    const username = result.profile.displayName
-    const password_before = result.profile.id + email;
-    const photo = result.profile.photos[0].value
-    //회원가입 + 로그인 
-    const loginRes = this.authService.socialLogin(email,username,password_before,photo)
-    return loginRes;
+    console.log(req,'req')
+    // const result: GoogleAuthResult = req.hybridAuthResult;
+    // const email = result.profile.emails[0].value
+    // const username = result.profile.displayName
+    // const password_before = result.profile.id + email;
+    // const photo = result.profile.photos[0].value
+    // //회원가입 + 로그인 
+    // const loginRes = this.authService.socialLogin(email,username,password_before,photo)
+    // return loginRes;
    }
 
    @Post('password/findbyemail')

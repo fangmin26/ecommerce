@@ -16,7 +16,7 @@ async function bootstrap() {
   ))
 
   const docubuilder = new DocumentBuilder()
-  .setTitle('mindiz_back')
+  .setTitle('bookdiz_back')
   .setDescription('cloudfunding_rebuilding')
   .setVersion('1.0')
   .addTag('clound funding rebuilding backend project')

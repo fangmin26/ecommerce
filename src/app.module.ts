@@ -45,11 +45,11 @@ import * as cors from 'cors';
         EMAIL_USER: Joi.string().required(),
         EMAIL_PASSWORD: Joi.string().required(),
 
-        FACEBOOK_CLIENT_ID:Joi.string().required(),
-        FACEBOOK_CLIENT_SECRET:Joi.string().required(),
+        // FACEBOOK_CLIENT_ID:Joi.string().required(),
+        // FACEBOOK_CLIENT_SECRET:Joi.string().required(),
 
-        GOOGLE_CLIENT_ID:Joi.string().required(),
-        GOOGLE_CLIENT_SECRET:Joi.string().required(),
+        // GOOGLE_CLIENT_ID:Joi.string().required(),
+        // GOOGLE_CLIENT_SECRET:Joi.string().required(),
 
         AWS_REGION:Joi.string().required(),
         AWS_ACCESS_KEY_ID:Joi.string().required(),
